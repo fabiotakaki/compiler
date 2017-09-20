@@ -1,0 +1,17 @@
+h1 {
+  font-family: 'Lobster', cursive;
+  margin: 20px 0; }
+
+.logo {
+  font-family: 'Lobster', cursive; }
+
+footer {
+  padding: 20px;
+  text-align: center; }
+
+.custom-file-control:before{
+  content: "Browse";
+}
+.custom-file-control:after{
+  content: "Add file .txt";
+}

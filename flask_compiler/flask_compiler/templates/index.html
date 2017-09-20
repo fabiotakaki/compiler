@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lexical Analysis</title>
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.min.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<section class="compiler">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="logo">Lexical Analysis</h1>
+        <h2>Code</h2>
+        <pre id="code" style="height: 500px; width: 100%; border-radius: 5px;"></pre>
+        <button class="btn btn-outline-success float-right" id="go"><i class="fa fa-cogs" aria-hidden="true"></i> Go! </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <h2>File</h2>
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <label class="custom-file">
+          <input type="file" id="file" name="file" class="custom-file-input">
+          <span class="custom-file-control"></span>
+        </label>
+        <button class="btn btn-outline-success" type="submit" style="margin-top: 8px;"><i class="fa fa-cogs" aria-hidden="true"></i> Go! </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <h1>Result</h1>
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th>string</th>
+              <th>token</th>
+              <th>line</th>
+              <th>start column</th>
+              <th>end column</th>
+              <th>error</th>
+            </tr>
+          </thead>
+          <tbody id="result-lexical"></tbody>
+        </table>
+
+        <h1>Code tested</h1>
+        <div id="code-tested"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Copyright &copy; 2017 - Compiler - Fabio S. Takaki
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='src-min-noconflict/ace.js') }}" charset="utf-8"></script>
+<script type="text/javascript"> 
+  var editor = ace.edit("code");
+      editor.setTheme("ace/theme/monokai");
+      editor.getSession().setMode("ace/mode/javascript");
+
+  $('#go').click(function(){
+    $.post( "/validate", { code: editor.getValue() }, function(data){
+      $('#result-lexical').html('');
+      var html = '';
+      for(var i=0; i<data.lexical_table.length; i++){
+        if(data.lexical_table[i].error){
+          html += `
+            <tr class="table-danger">
+              <td>`+data.lexical_table[i].string+`</td>
+              <td></td>
+              <td>`+data.lexical_table[i].line+`</td>
+              <td>`+data.lexical_table[i].start+`</td>
+              <td>`+data.lexical_table[i].start+`</td>
+              <td>`+data.lexical_table[i].message+`</td>
+            </tr>`;
+        }else{
+          html += `
+            <tr>
+              <td>`+data.lexical_table[i].string+`</td>
+              <td>`+data.lexical_table[i].token+`</td>
+              <td>`+data.lexical_table[i].line+`</td>
+              <td>`+data.lexical_table[i].start+`</td>
+              <td>`+data.lexical_table[i].end+`</td>
+              <td></td>
+            </tr>`;
+        }
+      }
+      $('#result-lexical').html(html);
+      $('#code-tested').html('');
+      $('#code-tested').html(data.code);
+    });
+  });
+
+
+  // form file submit
+  $("form#uploadForm").submit(function(){
+
+      var formData = new FormData($(this)[0]);
+
+      $.ajax({
+          url: '/validate_file',
+          type: 'POST',
+          data: formData,
+          async: true,
+          success: function (data) {
+            $('#result-lexical').html('');
+              var html = '';
+              for(var i=0; i<data.lexical_table.length; i++){
+                if(data.lexical_table[i].error){
+                  html += `
+                    <tr class="table-danger">
+                      <td>`+data.lexical_table[i].string+`</td>
+                      <td></td>
+                      <td>`+data.lexical_table[i].line+`</td>
+                      <td>`+data.lexical_table[i].start+`</td>
+                      <td>`+data.lexical_table[i].start+`</td>
+                      <td>`+data.lexical_table[i].message+`</td>
+                    </tr>`;
+                }else{
+                  html += `
+                    <tr>
+                      <td>`+data.lexical_table[i].string+`</td>
+                      <td>`+data.lexical_table[i].token+`</td>
+                      <td>`+data.lexical_table[i].line+`</td>
+                      <td>`+data.lexical_table[i].start+`</td>
+                      <td>`+data.lexical_table[i].end+`</td>
+                      <td></td>
+                    </tr>`;
+                }
+              }
+              $('#result-lexical').html(html);
+              $('#code-tested').html('');
+              $('#code-tested').html(data.code);
+          },
+          cache: false,
+          contentType: false,
+          processData: false
+      });
+
+      return false;
+  });
+</script>
+</body>
+</html>
