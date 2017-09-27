@@ -6,26 +6,43 @@ class Lexical:
   def run(self):
     # List of token names.   This is always required
     tokens = (
-       'NUM',
-       'OPSOMA',
-       'OPSUB',
-       'OPMUL',
-       'OPDIV',
-       'AP',
-       'FP',
+      'OPSOMA',
+      'OPSUB',
+      'OPMUL',
+      'OPDIV',
+      'NUMERO',
+      'IDENTIFICADOR',
+      'PALAVRA_RESERVADA',
+      'SIMBOLOS_ESPECIAIS',
+      'COMENTARIOS',
+      'AP',
+      'FP',
     )
 
     # Regular expression rules for simple tokens
+    t_IDENTIFICADOR = r'[a-zA-Z]([a-zA-Z]|[0-9]|_)*'
+    t_PALAVRA_RESERVADA  = r'(program|procedure|var|begin|end|if|then|else|while|do)'
+    t_SIMBOLOS_ESPECIAIS = r'(>|<|<=|>=|:=|;|,|:|\.)'
     t_OPSOMA = r'\+'
     t_OPSUB  = r'-'
     t_OPMUL  = r'\*'
-    t_OPDIV  = r'/'
+    t_OPDIV  = r'^/$'
     t_AP     = r'\('
     t_FP     = r'\)'
 
+    # comments
+    def t_COMENTARIOS(t):
+      r'{(.|\n)*}|(//.*)'
+      if(t.value[0] == '{'):
+        t.value = '{}'
+      else:
+        t.value = '//'
+      return t
+
+
     # A regular expression rule with some action code
-    def t_NUM(t):
-      r'\d+.?\d*'
+    def t_NUMERO(t):
+      r'\d+\.?\d*'
       return t
 
     # Define a rule so we can track line numbers
@@ -38,7 +55,6 @@ class Lexical:
 
     # Error handling rule
     def t_error(t):
-      print t
       response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Illegal character '%s'" % t.value[0])]))
       t.lexer.skip(1)
 
@@ -61,6 +77,5 @@ class Lexical:
       tok = lexer.token()
       if not tok: 
         break      # No more input
-      print tok
       response.append(dict([('token', tok.type), ('string',tok.value), ('line', tok.lineno), ('start', tok.lexpos), ('end', (tok.lexpos+len(tok.value)-1))]))
     return response
