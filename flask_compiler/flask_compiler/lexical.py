@@ -68,12 +68,10 @@ class Lexical:
     # comments
     def t_COMENTARIOS_UMA_LINHA(t):
       r'(//.*)'
-      t.value = '//'
       return t 
 
     def t_COMENTARIOS_MULTI_LINHA(t):
       r'{(.|\n)*}'
-      t.value = '{}'
       return t
 
     # A regular expression rule with some action code
