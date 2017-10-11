@@ -17,8 +17,9 @@ def validate():
   assert request.method == 'POST'
 
   cr = Lexical(request.form['code'])
+  result = cr.run()
 
-  return jsonify({'code': request.form['code'], 'lexical_table': cr.run()})
+  return jsonify({'code': request.form['code'], 'lexical_table': result[0], 'syntatic_result': result[1]})
 
 @app.route('/validate_file', methods=['POST'])
 def validate_file():
