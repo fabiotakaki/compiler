@@ -16,7 +16,9 @@ Clone the repository and using your virtualenv, run the following steps on termi
 2. ```<bloco> = {int, boolean, procedure, begin};```
 3. ```<parte de declaração de variáveis> = {int, boolean}; 4<declaração de variáveis> = {int, boolean};```
 5. ```<lista de identificadores> = {_,a - z,A - Z};```
-6. ```<parte de declaração de subrotina> = {procedure}; 7<declaração de procedimento> = {procedure}; 8<parâmetros formais> = {var, _,a - z,A - Z};```
+6. ```<parte de declaração de subrotina> = {procedure};``` 
+7. ```<declaração de procedimento> = {procedure}; ```
+8  ```<parâmetros formais> = {var, _,a - z,A - Z};```
 9. ```<seção de parâmetros formais> = {var, _,a - z,A - Z}; 10<comando composto> = {begin};```
 11. ```<comando> = {_,a - z,A – Z, if, while, begin}; 12<atribuição> = {_,a - z,A – Z };```
 13. ```<chamada de procedimento> = {_,a - z,A – Z }; 14<comando condifional 1> = {begin};```
