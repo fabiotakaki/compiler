@@ -11,37 +11,45 @@ class Lexical:
     )
 
     reserved = {
-        'program':'PALAVRA_RESERVADA_PROGRAM',
-        'procedure':'PALAVRA_RESERVADA_PROCEDURE',
-        'var':'PALAVRA_RESERVADA_VAR',
-        'begin':'PALAVRA_RESERVADA_BEGIN',
-        'end':'PALAVRA_RESERVADA_END',
-        'if':'PALAVRA_RESERVADA_IF',
-        'then':'PALAVRA_RESERVADA_THEN',
-        'else':'PALAVRA_RESERVADA_ELSE',
-        'while':'PALAVRA_RESERVADA_WHILE',
-        'do':'PALAVRA_RESERVADA_DO',
+        'program':'RES_PROGRAM',
+        'procedure':'RES_PROCEDURE',
+        'var':'RES_VAR',
+        'int':'RES_INT',
+        'boolean':'RES_BOOLEAN',
+        'begin':'RES_BEGIN',
+        'end':'RES_END',
+        'if':'RES_IF',
+        'then':'RES_THEN',
+        'else':'RES_ELSE',
+        'while':'RES_WHILE',
+        'do':'RES_DO',
+        'and':'RES_AND',
+        'div':'RES_DIV',
+        'or':'RES_OR',
+        'not':'RES_NOT',
     }
+    
     # List of token names.   This is always required
     tokens = [
       'OPSOMA',
       'OPSUB',
       'OPMUL',
       'OPDIV',
-      'NUMERO_INTEIRO',
-      'NUMERO_REAL',
+      'NUMERO',
       'IDENTIFICADOR',
-      'SIMBOLOS_ESPECIAIS_MAIOR',
-      'SIMBOLOS_ESPECIAIS_MENOR',
-      'SIMBOLOS_ESPECIAIS_MENOR_IGUAL',
-      'SIMBOLOS_ESPECIAIS_MAIOR_IGUAL',
-      'SIMBOLOS_ESPECIAIS_ATRIBUICAO',
-      'SIMBOLOS_ESPECIAIS_DELIMITADOR',
-      'SIMBOLOS_ESPECIAIS_VIRGULA',
-      'SIMBOLOS_ESPECIAIS_DOIS_PONTOS',
-      'SIMBOLOS_ESPECIAIS_PONTO_FINAL',
+      'SE_MAIOR',
+      'SE_MENOR',
+      'SE_MENOR_IGUAL',
+      'SE_MAIOR_IGUAL',
+      'SE_DIFERENTE',
+      'SE_ATRIBUICAO',
+      'SE_DELIMITADOR',
+      'SE_VIRGULA',
+      'SE_DOIS_PONTOS',
+      'SE_PONTO_FINAL',
       'COMENTARIOS_UMA_LINHA',
       'COMENTARIOMULTILINHA',
+      'FIMCOMENTARIO',
       'AP',
       'FP',
     ] + list(reserved.values())
@@ -57,15 +65,16 @@ class Lexical:
         t.type = reserved.get(t.value,'IDENTIFICADOR')    # Check for reserved words
         return t
 
-    t_SIMBOLOS_ESPECIAIS_MAIOR = r'>'
-    t_SIMBOLOS_ESPECIAIS_MENOR = r'<'
-    t_SIMBOLOS_ESPECIAIS_MENOR_IGUAL = r'<='
-    t_SIMBOLOS_ESPECIAIS_MAIOR_IGUAL = r'>='
-    t_SIMBOLOS_ESPECIAIS_ATRIBUICAO = r':='
-    t_SIMBOLOS_ESPECIAIS_DELIMITADOR = r';'
-    t_SIMBOLOS_ESPECIAIS_VIRGULA = r','
-    t_SIMBOLOS_ESPECIAIS_DOIS_PONTOS = r':'
-    t_SIMBOLOS_ESPECIAIS_PONTO_FINAL = r'\.'
+    t_SE_MAIOR = r'>'
+    t_SE_MENOR = r'<'
+    t_SE_MENOR_IGUAL = r'<='
+    t_SE_MAIOR_IGUAL = r'>='
+    t_SE_DIFERENTE = r'<>'
+    t_SE_ATRIBUICAO = r':='
+    t_SE_DELIMITADOR = r';'
+    t_SE_VIRGULA = r','
+    t_SE_DOIS_PONTOS = r':'
+    t_SE_PONTO_FINAL = r'\.'
     t_OPSOMA = r'\+'
     t_OPSUB  = r'-'
     t_OPMUL  = r'\*'
@@ -83,16 +92,24 @@ class Lexical:
     #   return t
 
     def t_begin_COMENTARIOMULTILINHA(t):
-      r'{'
-      t.lexer.begin('COMENTARIOMULTILINHA')     
+      r'\{'
+      t.lexer.code_start = t.lexer.lexpos        # Record the starting position
+      t.lexer.level = 1                          # Initial brace level
+      t.lexer.begin('COMENTARIOMULTILINHA')                     # Enter 'ccode' state 
 
-    def t_COMENTARIOMULTILINHA_end(t):
-      r'}'
-      t.lexer.begin('INITIAL')        # Back to the initial state
-      return t
+    def t_COMENTARIOMULTILINHA_FIMCOMENTARIO(t):
+      r'\}'
+      t.lexer.level -=1
+
+      # If closing brace, return the code fragment
+      if t.lexer.level == 0:
+          t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos+1]
+          t.lexer.lineno += t.value.count('\n')
+          t.lexer.begin('INITIAL')           
+          return t
 
     def t_COMENTARIOMULTILINHA_COMENTARIOMULTILINHA(t):
-      r'(.|\n)+'
+      r'([^{}]|\n)+'
       pass
 
     def t_COMENTARIOMULTILINHA_error(t):
@@ -100,22 +117,13 @@ class Lexical:
       t.lexer.skip(1)
 
     # A regular expression rule with some action code
-    def t_NUMERO_INTEIRO(t):
+    def t_NUMERO(t):
       r'\d+'
       if len(t.value) > 5:
         lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Size number exceding 5 digits '%s'" % t.value)]))
         t.lexer.skip(1)
       else:  
         t.value = int(t.value)
-        return t
-
-    def t_NUMERO_REAL(p):
-      r'\d+\.\d+'
-      if len(t.value) > 5:
-        lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Size number exceding 5 digits '%s'" % t.value)]))
-        t.lexer.skip(1)
-      else:  
-        t.value = float(t.value)
         return t
 
     # Define a rule so we can track line numbers
@@ -166,6 +174,7 @@ class Lexical:
       '''
       root : expression
            | var_assign
+           | type_declaration
            | empty
       '''
       print(p[1])
@@ -176,13 +185,14 @@ class Lexical:
                  | expression OPDIV expression
                  | expression OPSOMA expression
                  | expression OPSUB expression
+                 | AP expression FP
       '''
       p[0] = (p[2], p[1], p[3])
 
-    def p_expression_int_float(p):
+    def p_expression_int(p):
       '''
-      expression : NUMERO_INTEIRO
-                 | NUMERO_REAL
+      expression : NUMERO
+                 | IDENTIFICADOR
       '''
       p[0] = p[1]
 
@@ -192,12 +202,25 @@ class Lexical:
       '''
       p[0] = None
 
+    def p_type_declaration(p):
+      '''
+        type_declaration : RES_INT declaration
+                         | RES_BOOLEAN declaration
+      '''
+      p[0] = (p[1], p[2])
+
+    def p_declaration(p):
+      '''
+        declaration : IDENTIFICADOR SE_VIRGULA declaration
+                    | IDENTIFICADOR SE_DELIMITADOR
+      '''
+      p[0] = p[1]
+
     def p_var_assign(p):
       '''
-      var_assign : IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression
-                 | IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO IDENTIFICADOR
+      var_assign : RES_VAR IDENTIFICADOR SE_ATRIBUICAO expression SE_DELIMITADOR
       '''
-      p[0] = (p[2], p[1], p[3])
+      p[0] = (p[3], p[2], p[4])
 
 
     parser = yacc.yacc()

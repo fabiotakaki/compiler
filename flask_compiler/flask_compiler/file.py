@@ -26,4 +26,5 @@ class File:
     with open(self.upload_folder+self.filename, "r") as file:
       code = file.read()
       cr = Lexical(code)
-      return jsonify({'code': code, 'lexical_table': cr.run()})
+      result = cr.run()
+      return jsonify({'code': code, 'lexical_table': result[0], 'syntatic_result': result[1]})

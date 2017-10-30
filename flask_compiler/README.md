@@ -57,4 +57,104 @@ Clone the repository and using your virtualenv, run the following steps on termi
 25. ```<identificador> = {end, do, then, ;};```
 26. ```<letra> = { end, do, then, ;, 1-9, a-z, A-Z};```
 
-<!-- This project is deployed on Heroku: [https://anchor-loans-test.herokuapp.com/](https://anchor-loans-test.herokuapp.com/) -->
+# Gramática
+
+## Declarações
+program : RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block
+
+block : part_declare_variables compound_command
+      | part_declare_subroutines compound_command
+      | compound_command
+
+part_declare_variables : declare_variables SE_DELIMITADOR
+                       | part_declare_variables
+
+declare_variables : type list_ids
+
+list_ids : IDENTIFICADOR
+         | SE_VIRGULA list_ids
+
+
+part_declare_subroutines : declare_procedure
+                         | part_declare_subroutines
+
+declare_procedure : RES_PROCEDURE IDENTIFICADOR formal_parameters block
+                  | RES_PROCEDURE IDENTIFICADOR block
+
+formal_parameters : AP section_formal_parameters FP
+
+section_formal_parameters : RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR
+                          | list_ids SE_DOIS_PONTOS IDENTIFICADOR
+
+## Comandos
+
+compound_command : RES_BEGIN commands RES_END
+
+commands : command
+         | commands
+
+command : assignment
+        | calling_procedure
+        | compound_command
+        | command_conditional_1
+        | command_loop_1
+
+assignment : variable
+           | expression
+
+calling_procedure : IDENTIFICADOR
+                  | IDENTIFICADOR AP list_expressions FP
+
+command_conditional_1 : RES_IF expression RES_THEN command
+                      | RES_IF expression RES_THEN command RES_ELSE command
+
+command_loop_1 : RES_WHILE expression RES_DO command
+
+
+## Expressões
+
+expression : simple_expression
+           | simple_expression relation simple_expression
+
+relation : RES_IGUAL
+         | RES_DIFERENTE                      
+         | RES_MENOR                      
+         | RES_MENOR_IGUAL                      
+         | RES_MAIOR_IGUAL                      
+         | RES_MAIOR
+
+simple_expression : OPSOMA term simple_expression_1
+                  | OPSUB term simple_expression_1
+                  | OPSOMA term
+                  | OPSUB term
+
+simple_expression_1 : OPSOMA term
+                    | OPSUB term
+                    | RES_OR term
+                    | simple_expression_1
+
+term : factor term_1
+     | factor
+
+term_1 : OPMUL factor
+       | RES_DIV factor
+       | RES_AND factor 
+       | term_1       
+
+factor : variable
+       | NUMERO
+       | AP expression FP
+       | RES_NOT factor
+
+variable : IDENTIFICADOR
+         | IDENTIFICADOR expression
+
+list_expression : expression
+                | expression expression_1
+
+expression_1 : SE_VIRGULA expression
+             | expression_1
+
+   
+
+

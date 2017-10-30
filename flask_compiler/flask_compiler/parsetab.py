@@ -5,9 +5,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftOPSOMAOPSUBleftOPMULOPDIVOPSOMA OPSUB OPMUL OPDIV NUMERO_INTEIRO NUMERO_REAL IDENTIFICADOR SIMBOLOS_ESPECIAIS_MAIOR SIMBOLOS_ESPECIAIS_MENOR SIMBOLOS_ESPECIAIS_MENOR_IGUAL SIMBOLOS_ESPECIAIS_MAIOR_IGUAL SIMBOLOS_ESPECIAIS_ATRIBUICAO SIMBOLOS_ESPECIAIS_DELIMITADOR SIMBOLOS_ESPECIAIS_VIRGULA SIMBOLOS_ESPECIAIS_DOIS_PONTOS SIMBOLOS_ESPECIAIS_PONTO_FINAL COMENTARIOS_UMA_LINHA COMENTARIOMULTILINHA AP FP PALAVRA_RESERVADA_THEN PALAVRA_RESERVADA_BEGIN PALAVRA_RESERVADA_PROGRAM PALAVRA_RESERVADA_END PALAVRA_RESERVADA_DO PALAVRA_RESERVADA_VAR PALAVRA_RESERVADA_ELSE PALAVRA_RESERVADA_WHILE PALAVRA_RESERVADA_PROCEDURE PALAVRA_RESERVADA_IF\n      root : expression\n           | var_assign\n           | empty\n      \n      expression : expression OPMUL expression\n                 | expression OPDIV expression\n                 | expression OPSOMA expression\n                 | expression OPSUB expression\n      \n      expression : NUMERO_INTEIRO\n                 | NUMERO_REAL\n      \n      empty :\n      \n      var_assign : IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression\n                 | IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO IDENTIFICADOR\n      '
+_lr_signature = 'leftOPSOMAOPSUBleftOPMULOPDIVOPSOMA OPSUB OPMUL OPDIV NUMERO IDENTIFICADOR SIMBOLOS_ESPECIAIS_MAIOR SIMBOLOS_ESPECIAIS_MENOR SIMBOLOS_ESPECIAIS_MENOR_IGUAL SIMBOLOS_ESPECIAIS_MAIOR_IGUAL SIMBOLOS_ESPECIAIS_ATRIBUICAO SIMBOLOS_ESPECIAIS_DELIMITADOR SIMBOLOS_ESPECIAIS_VIRGULA SIMBOLOS_ESPECIAIS_DOIS_PONTOS SIMBOLOS_ESPECIAIS_PONTO_FINAL COMENTARIOS_UMA_LINHA COMENTARIOMULTILINHA FIMCOMENTARIO AP FP PALAVRA_RESERVADA_THEN PALAVRA_RESERVADA_BEGIN PALAVRA_RESERVADA_DO PALAVRA_RESERVADA_INT PALAVRA_RESERVADA_ELSE PALAVRA_RESERVADA_BOOLEAN PALAVRA_RESERVADA_IF PALAVRA_RESERVADA_END PALAVRA_RESERVADA_WHILE PALAVRA_RESERVADA_PROGRAM PALAVRA_RESERVADA_VAR PALAVRA_RESERVADA_PROCEDURE\n      root : expression\n           | var_assign\n           | type_declaration\n           | empty\n      \n      expression : expression OPMUL expression\n                 | expression OPDIV expression\n                 | expression OPSOMA expression\n                 | expression OPSUB expression\n                 | AP expression FP\n      \n      expression : NUMERO\n                 | IDENTIFICADOR\n      \n      empty :\n      \n        type_declaration : PALAVRA_RESERVADA_INT declaration\n                         | PALAVRA_RESERVADA_BOOLEAN declaration\n      \n        declaration : IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration\n                    | IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR\n      \n      var_assign : PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR\n      '
     
-_lr_action_items = {'OPDIV':([3,5,7,14,15,16,17,18,],[-9,11,-8,11,-4,11,-5,11,]),'IDENTIFICADOR':([0,8,],[2,13,]),'OPSOMA':([3,5,7,14,15,16,17,18,],[-9,10,-8,10,-4,-6,-5,-7,]),'OPSUB':([3,5,7,14,15,16,17,18,],[-9,12,-8,12,-4,-6,-5,-7,]),'SIMBOLOS_ESPECIAIS_ATRIBUICAO':([2,],[8,]),'NUMERO_REAL':([0,8,9,10,11,12,],[3,3,3,3,3,3,]),'OPMUL':([3,5,7,14,15,16,17,18,],[-9,9,-8,9,-4,9,-5,9,]),'$end':([0,1,3,4,5,6,7,13,14,15,16,17,18,],[-10,0,-9,-2,-1,-3,-8,-12,-11,-4,-6,-5,-7,]),'NUMERO_INTEIRO':([0,8,9,10,11,12,],[7,7,7,7,7,7,]),}
+_lr_action_items = {'FP':([4,5,14,23,24,25,26,27,],[-11,-10,23,-9,-5,-7,-6,-8,]),'PALAVRA_RESERVADA_INT':([0,],[1,]),'OPDIV':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,18,18,-9,-5,18,-6,18,18,]),'SIMBOLOS_ESPECIAIS_DELIMITADOR':([4,5,12,23,24,25,26,27,30,],[-11,-10,21,-9,-5,-7,-6,-8,31,]),'AP':([0,2,16,17,18,19,28,],[2,2,2,2,2,2,2,]),'PALAVRA_RESERVADA_VAR':([0,],[10,]),'OPSOMA':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,17,17,-9,-5,-7,-6,-8,17,]),'OPSUB':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,19,19,-9,-5,-7,-6,-8,19,]),'NUMERO':([0,2,16,17,18,19,28,],[5,5,5,5,5,5,5,]),'PALAVRA_RESERVADA_BOOLEAN':([0,],[7,]),'SIMBOLOS_ESPECIAIS_ATRIBUICAO':([20,],[28,]),'SIMBOLOS_ESPECIAIS_VIRGULA':([12,],[22,]),'OPMUL':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,16,16,-9,-5,16,-6,16,16,]),'IDENTIFICADOR':([0,1,2,7,10,16,17,18,19,22,28,],[4,12,4,12,20,4,4,4,4,12,4,]),'$end':([0,3,4,5,6,8,9,11,13,15,21,23,24,25,26,27,29,31,],[-12,0,-11,-10,-3,-2,-1,-4,-13,-14,-16,-9,-5,-7,-6,-8,-15,-17,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,8,9,10,11,12,],[5,14,15,16,17,18,]),'var_assign':([0,],[4,]),'root':([0,],[1,]),'empty':([0,],[6,]),}
+_lr_goto_items = {'expression':([0,2,16,17,18,19,28,],[9,14,24,25,26,27,30,]),'type_declaration':([0,],[6,]),'declaration':([1,7,22,],[13,15,29,]),'var_assign':([0,],[8,]),'root':([0,],[3,]),'empty':([0,],[11,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,16 +26,21 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> root","S'",1,None,None,None),
-  ('root -> expression','root',1,'p_root','lexical.py',167),
-  ('root -> var_assign','root',1,'p_root','lexical.py',168),
-  ('root -> empty','root',1,'p_root','lexical.py',169),
-  ('expression -> expression OPMUL expression','expression',3,'p_expression','lexical.py',175),
-  ('expression -> expression OPDIV expression','expression',3,'p_expression','lexical.py',176),
-  ('expression -> expression OPSOMA expression','expression',3,'p_expression','lexical.py',177),
-  ('expression -> expression OPSUB expression','expression',3,'p_expression','lexical.py',178),
-  ('expression -> NUMERO_INTEIRO','expression',1,'p_expression_int_float','lexical.py',184),
-  ('expression -> NUMERO_REAL','expression',1,'p_expression_int_float','lexical.py',185),
-  ('empty -> <empty>','empty',0,'p_empty','lexical.py',191),
-  ('var_assign -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression','var_assign',3,'p_var_assign','lexical.py',197),
-  ('var_assign -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO IDENTIFICADOR','var_assign',3,'p_var_assign','lexical.py',198),
+  ('root -> expression','root',1,'p_root','lexical.py',168),
+  ('root -> var_assign','root',1,'p_root','lexical.py',169),
+  ('root -> type_declaration','root',1,'p_root','lexical.py',170),
+  ('root -> empty','root',1,'p_root','lexical.py',171),
+  ('expression -> expression OPMUL expression','expression',3,'p_expression','lexical.py',177),
+  ('expression -> expression OPDIV expression','expression',3,'p_expression','lexical.py',178),
+  ('expression -> expression OPSOMA expression','expression',3,'p_expression','lexical.py',179),
+  ('expression -> expression OPSUB expression','expression',3,'p_expression','lexical.py',180),
+  ('expression -> AP expression FP','expression',3,'p_expression','lexical.py',181),
+  ('expression -> NUMERO','expression',1,'p_expression_int_float','lexical.py',187),
+  ('expression -> IDENTIFICADOR','expression',1,'p_expression_int_float','lexical.py',188),
+  ('empty -> <empty>','empty',0,'p_empty','lexical.py',194),
+  ('type_declaration -> PALAVRA_RESERVADA_INT declaration','type_declaration',2,'p_type_declaration','lexical.py',200),
+  ('type_declaration -> PALAVRA_RESERVADA_BOOLEAN declaration','type_declaration',2,'p_type_declaration','lexical.py',201),
+  ('declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration','declaration',3,'p_declaration','lexical.py',207),
+  ('declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR','declaration',2,'p_declaration','lexical.py',208),
+  ('var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR','var_assign',5,'p_var_assign','lexical.py',214),
 ]
