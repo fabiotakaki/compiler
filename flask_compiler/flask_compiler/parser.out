@@ -2,511 +2,164 @@ Created by PLY version 3.10 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    PALAVRA_RESERVADA_DO
-    PALAVRA_RESERVADA_PROCEDURE
-    PALAVRA_RESERVADA_ELSE
-    PALAVRA_RESERVADA_END
-    PALAVRA_RESERVADA_THEN
-    PALAVRA_RESERVADA_BEGIN
-    FIMCOMENTARIO
+    SE_DIFERENTE
     COMENTARIOMULTILINHA
-    SIMBOLOS_ESPECIAIS_DOIS_PONTOS
+    OPDIV
+    SE_PONTO_FINAL
+    SE_MAIOR
+    FIMCOMENTARIO
+    SE_MENOR
     COMENTARIOS_UMA_LINHA
-    SIMBOLOS_ESPECIAIS_MAIOR
-    PALAVRA_RESERVADA_IF
-    PALAVRA_RESERVADA_PROGRAM
-    PALAVRA_RESERVADA_WHILE
-    SIMBOLOS_ESPECIAIS_PONTO_FINAL
-    SIMBOLOS_ESPECIAIS_MENOR_IGUAL
-    SIMBOLOS_ESPECIAIS_MAIOR_IGUAL
-    SIMBOLOS_ESPECIAIS_MENOR
+    SE_MENOR_IGUAL
+    SE_ATRIBUICAO
+    RES_INT
+    RES_BOOLEAN
+    SE_MAIOR_IGUAL
 
 Grammar
 
-Rule 0     S' -> root
-Rule 1     root -> expression
-Rule 2     root -> var_assign
-Rule 3     root -> type_declaration
-Rule 4     root -> empty
-Rule 5     expression -> expression OPMUL expression
-Rule 6     expression -> expression OPDIV expression
-Rule 7     expression -> expression OPSOMA expression
-Rule 8     expression -> expression OPSUB expression
-Rule 9     expression -> AP expression FP
-Rule 10    expression -> NUMERO
-Rule 11    expression -> IDENTIFICADOR
-Rule 12    empty -> <empty>
-Rule 13    type_declaration -> PALAVRA_RESERVADA_INT declaration
-Rule 14    type_declaration -> PALAVRA_RESERVADA_BOOLEAN declaration
-Rule 15    declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration
-Rule 16    declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR
-Rule 17    var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR
+Rule 0     S' -> program
+Rule 1     program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block
+Rule 2     block -> part_declare_variables compound_command
+Rule 3     block -> part_declare_subroutines compound_command
+Rule 4     block -> compound_command
+Rule 5     part_declare_variables -> declare_variables SE_DELIMITADOR
+Rule 6     part_declare_variables -> part_declare_variables
+Rule 7     declare_variables -> type list_ids
+Rule 8     list_ids -> IDENTIFICADOR
+Rule 9     list_ids -> SE_VIRGULA list_ids
+Rule 10    part_declare_subroutines -> declare_procedure
+Rule 11    part_declare_subroutines -> part_declare_subroutines
+Rule 12    declare_procedure -> RES_PROCEDURE IDENTIFICADOR formal_parameters block
+Rule 13    declare_procedure -> RES_PROCEDURE IDENTIFICADOR block
+Rule 14    formal_parameters -> AP section_formal_parameters FP
+Rule 15    section_formal_parameters -> RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR
+Rule 16    section_formal_parameters -> list_ids SE_DOIS_PONTOS IDENTIFICADOR
+Rule 17    compound_command -> RES_BEGIN commands RES_END
+Rule 18    commands -> command
+Rule 19    commands -> commands
+Rule 20    command -> assignment
+Rule 21    command -> calling_procedure
+Rule 22    command -> compound_command
+Rule 23    command -> command_conditional_1
+Rule 24    command -> command_loop_1
+Rule 25    assignment -> variable
+Rule 26    assignment -> expression
+Rule 27    calling_procedure -> IDENTIFICADOR
+Rule 28    calling_procedure -> IDENTIFICADOR AP list_expressions FP
+Rule 29    command_conditional_1 -> RES_IF expression RES_THEN command
+Rule 30    command_conditional_1 -> RES_IF expression RES_THEN command RES_ELSE command
+Rule 31    command_loop_1 -> RES_WHILE expression RES_DO command
+Rule 32    expression -> simple_expression
+Rule 33    expression -> simple_expression relation simple_expression
+Rule 34    relation -> RES_IGUAL
+Rule 35    relation -> RES_DIFERENTE
+Rule 36    relation -> RES_MENOR
+Rule 37    relation -> RES_MENOR_IGUAL
+Rule 38    relation -> RES_MAIOR_IGUAL
+Rule 39    relation -> RES_MAIOR
+Rule 40    simple_expression -> OPSOMA term simple_expression_1
+Rule 41    simple_expression -> OPSUB term simple_expression_1
+Rule 42    simple_expression -> OPSOMA term
+Rule 43    simple_expression -> OPSUB term
+Rule 44    simple_expression_1 -> OPSOMA term
+Rule 45    simple_expression_1 -> OPSUB term
+Rule 46    simple_expression_1 -> RES_OR term
+Rule 47    simple_expression_1 -> simple_expression_1
+Rule 48    term -> factor term_1
+Rule 49    term -> factor
+Rule 50    term_1 -> OPMUL factor
+Rule 51    term_1 -> RES_DIV factor
+Rule 52    term_1 -> RES_AND factor
+Rule 53    term_1 -> term_1
+Rule 54    factor -> variable
+Rule 55    factor -> NUMERO
+Rule 56    factor -> AP expression FP
+Rule 57    factor -> RES_NOT factor
+Rule 58    variable -> IDENTIFICADOR
+Rule 59    variable -> IDENTIFICADOR expression
+Rule 60    list_expression -> expression
+Rule 61    list_expression -> expression expression_1
+Rule 62    expression_1 -> SE_VIRGULA expression
+Rule 63    expression_1 -> expression_1
+Rule 64    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AP                   : 9
+AP                   : 14 28 56
 COMENTARIOMULTILINHA : 
 COMENTARIOS_UMA_LINHA : 
 FIMCOMENTARIO        : 
-FP                   : 9
-IDENTIFICADOR        : 11 15 16 17
-NUMERO               : 10
-OPDIV                : 6
-OPMUL                : 5
-OPSOMA               : 7
-OPSUB                : 8
-PALAVRA_RESERVADA_BEGIN : 
-PALAVRA_RESERVADA_BOOLEAN : 14
-PALAVRA_RESERVADA_DO : 
-PALAVRA_RESERVADA_ELSE : 
-PALAVRA_RESERVADA_END : 
-PALAVRA_RESERVADA_IF : 
-PALAVRA_RESERVADA_INT : 13
-PALAVRA_RESERVADA_PROCEDURE : 
-PALAVRA_RESERVADA_PROGRAM : 
-PALAVRA_RESERVADA_THEN : 
-PALAVRA_RESERVADA_VAR : 17
-PALAVRA_RESERVADA_WHILE : 
-SIMBOLOS_ESPECIAIS_ATRIBUICAO : 17
-SIMBOLOS_ESPECIAIS_DELIMITADOR : 16 17
-SIMBOLOS_ESPECIAIS_DOIS_PONTOS : 
-SIMBOLOS_ESPECIAIS_MAIOR : 
-SIMBOLOS_ESPECIAIS_MAIOR_IGUAL : 
-SIMBOLOS_ESPECIAIS_MENOR : 
-SIMBOLOS_ESPECIAIS_MENOR_IGUAL : 
-SIMBOLOS_ESPECIAIS_PONTO_FINAL : 
-SIMBOLOS_ESPECIAIS_VIRGULA : 15
+FP                   : 14 28 56
+IDENTIFICADOR        : 1 8 12 13 15 16 27 28 58 59
+NUMERO               : 55
+OPDIV                : 
+OPMUL                : 50
+OPSOMA               : 40 42 44
+OPSUB                : 41 43 45
+RES_AND              : 52
+RES_BEGIN            : 17
+RES_BOOLEAN          : 
+RES_DIV              : 51
+RES_DO               : 31
+RES_ELSE             : 30
+RES_END              : 17
+RES_IF               : 29 30
+RES_INT              : 
+RES_NOT              : 57
+RES_OR               : 46
+RES_PROCEDURE        : 12 13
+RES_PROGRAM          : 1
+RES_THEN             : 29 30
+RES_VAR              : 15
+RES_WHILE            : 31
+SE_ATRIBUICAO        : 
+SE_DELIMITADOR       : 1 5
+SE_DIFERENTE         : 
+SE_DOIS_PONTOS       : 15 16
+SE_MAIOR             : 
+SE_MAIOR_IGUAL       : 
+SE_MENOR             : 
+SE_MENOR_IGUAL       : 
+SE_PONTO_FINAL       : 
+SE_VIRGULA           : 9 62
 error                : 
 
 Nonterminals, with rules where they appear
 
-declaration          : 13 14 15
-empty                : 4
-expression           : 1 5 5 6 6 7 7 8 8 9 17
-root                 : 0
-type_declaration     : 3
-var_assign           : 2
-
-Parsing method: LALR
-
-state 0
-
-    (0) S' -> . root
-    (1) root -> . expression
-    (2) root -> . var_assign
-    (3) root -> . type_declaration
-    (4) root -> . empty
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-    (17) var_assign -> . PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR
-    (13) type_declaration -> . PALAVRA_RESERVADA_INT declaration
-    (14) type_declaration -> . PALAVRA_RESERVADA_BOOLEAN declaration
-    (12) empty -> .
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-    PALAVRA_RESERVADA_VAR shift and go to state 10
-    PALAVRA_RESERVADA_INT shift and go to state 1
-    PALAVRA_RESERVADA_BOOLEAN shift and go to state 7
-    $end            reduce using rule 12 (empty -> .)
-
-    root                           shift and go to state 3
-    type_declaration               shift and go to state 6
-    var_assign                     shift and go to state 8
-    expression                     shift and go to state 9
-    empty                          shift and go to state 11
-
-state 1
-
-    (13) type_declaration -> PALAVRA_RESERVADA_INT . declaration
-    (15) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration
-    (16) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    IDENTIFICADOR   shift and go to state 12
-
-    declaration                    shift and go to state 13
-
-state 2
-
-    (9) expression -> AP . expression FP
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 14
-
-state 3
-
-    (0) S' -> root .
-
-
-
-state 4
-
-    (11) expression -> IDENTIFICADOR .
-
-    OPMUL           reduce using rule 11 (expression -> IDENTIFICADOR .)
-    OPDIV           reduce using rule 11 (expression -> IDENTIFICADOR .)
-    OPSOMA          reduce using rule 11 (expression -> IDENTIFICADOR .)
-    OPSUB           reduce using rule 11 (expression -> IDENTIFICADOR .)
-    $end            reduce using rule 11 (expression -> IDENTIFICADOR .)
-    FP              reduce using rule 11 (expression -> IDENTIFICADOR .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 11 (expression -> IDENTIFICADOR .)
-
-
-state 5
-
-    (10) expression -> NUMERO .
-
-    OPMUL           reduce using rule 10 (expression -> NUMERO .)
-    OPDIV           reduce using rule 10 (expression -> NUMERO .)
-    OPSOMA          reduce using rule 10 (expression -> NUMERO .)
-    OPSUB           reduce using rule 10 (expression -> NUMERO .)
-    $end            reduce using rule 10 (expression -> NUMERO .)
-    FP              reduce using rule 10 (expression -> NUMERO .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 10 (expression -> NUMERO .)
-
-
-state 6
-
-    (3) root -> type_declaration .
-
-    $end            reduce using rule 3 (root -> type_declaration .)
-
-
-state 7
-
-    (14) type_declaration -> PALAVRA_RESERVADA_BOOLEAN . declaration
-    (15) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration
-    (16) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    IDENTIFICADOR   shift and go to state 12
-
-    declaration                    shift and go to state 15
-
-state 8
-
-    (2) root -> var_assign .
-
-    $end            reduce using rule 2 (root -> var_assign .)
-
-
-state 9
-
-    (1) root -> expression .
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    $end            reduce using rule 1 (root -> expression .)
-    OPMUL           shift and go to state 16
-    OPDIV           shift and go to state 18
-    OPSOMA          shift and go to state 17
-    OPSUB           shift and go to state 19
-
-
-state 10
-
-    (17) var_assign -> PALAVRA_RESERVADA_VAR . IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    IDENTIFICADOR   shift and go to state 20
-
-
-state 11
-
-    (4) root -> empty .
-
-    $end            reduce using rule 4 (root -> empty .)
-
-
-state 12
-
-    (15) declaration -> IDENTIFICADOR . SIMBOLOS_ESPECIAIS_VIRGULA declaration
-    (16) declaration -> IDENTIFICADOR . SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    SIMBOLOS_ESPECIAIS_VIRGULA shift and go to state 22
-    SIMBOLOS_ESPECIAIS_DELIMITADOR shift and go to state 21
-
-
-state 13
-
-    (13) type_declaration -> PALAVRA_RESERVADA_INT declaration .
-
-    $end            reduce using rule 13 (type_declaration -> PALAVRA_RESERVADA_INT declaration .)
-
-
-state 14
-
-    (9) expression -> AP expression . FP
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    FP              shift and go to state 23
-    OPMUL           shift and go to state 16
-    OPDIV           shift and go to state 18
-    OPSOMA          shift and go to state 17
-    OPSUB           shift and go to state 19
-
-
-state 15
-
-    (14) type_declaration -> PALAVRA_RESERVADA_BOOLEAN declaration .
-
-    $end            reduce using rule 14 (type_declaration -> PALAVRA_RESERVADA_BOOLEAN declaration .)
-
-
-state 16
-
-    (5) expression -> expression OPMUL . expression
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 24
-
-state 17
-
-    (7) expression -> expression OPSOMA . expression
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 25
-
-state 18
-
-    (6) expression -> expression OPDIV . expression
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 26
-
-state 19
-
-    (8) expression -> expression OPSUB . expression
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 27
-
-state 20
-
-    (17) var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR . SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    SIMBOLOS_ESPECIAIS_ATRIBUICAO shift and go to state 28
-
-
-state 21
-
-    (16) declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR .
-
-    $end            reduce using rule 16 (declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR .)
-
-
-state 22
-
-    (15) declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA . declaration
-    (15) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration
-    (16) declaration -> . IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR
-
-    IDENTIFICADOR   shift and go to state 12
-
-    declaration                    shift and go to state 29
-
-state 23
-
-    (9) expression -> AP expression FP .
-
-    OPMUL           reduce using rule 9 (expression -> AP expression FP .)
-    OPDIV           reduce using rule 9 (expression -> AP expression FP .)
-    OPSOMA          reduce using rule 9 (expression -> AP expression FP .)
-    OPSUB           reduce using rule 9 (expression -> AP expression FP .)
-    $end            reduce using rule 9 (expression -> AP expression FP .)
-    FP              reduce using rule 9 (expression -> AP expression FP .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 9 (expression -> AP expression FP .)
-
-
-state 24
-
-    (5) expression -> expression OPMUL expression .
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    OPMUL           reduce using rule 5 (expression -> expression OPMUL expression .)
-    OPDIV           reduce using rule 5 (expression -> expression OPMUL expression .)
-    OPSOMA          reduce using rule 5 (expression -> expression OPMUL expression .)
-    OPSUB           reduce using rule 5 (expression -> expression OPMUL expression .)
-    $end            reduce using rule 5 (expression -> expression OPMUL expression .)
-    FP              reduce using rule 5 (expression -> expression OPMUL expression .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 5 (expression -> expression OPMUL expression .)
-
-  ! OPMUL           [ shift and go to state 16 ]
-  ! OPDIV           [ shift and go to state 18 ]
-  ! OPSOMA          [ shift and go to state 17 ]
-  ! OPSUB           [ shift and go to state 19 ]
-
-
-state 25
-
-    (7) expression -> expression OPSOMA expression .
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    OPSOMA          reduce using rule 7 (expression -> expression OPSOMA expression .)
-    OPSUB           reduce using rule 7 (expression -> expression OPSOMA expression .)
-    $end            reduce using rule 7 (expression -> expression OPSOMA expression .)
-    FP              reduce using rule 7 (expression -> expression OPSOMA expression .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 7 (expression -> expression OPSOMA expression .)
-    OPMUL           shift and go to state 16
-    OPDIV           shift and go to state 18
-
-  ! OPMUL           [ reduce using rule 7 (expression -> expression OPSOMA expression .) ]
-  ! OPDIV           [ reduce using rule 7 (expression -> expression OPSOMA expression .) ]
-  ! OPSOMA          [ shift and go to state 17 ]
-  ! OPSUB           [ shift and go to state 19 ]
-
-
-state 26
-
-    (6) expression -> expression OPDIV expression .
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    OPMUL           reduce using rule 6 (expression -> expression OPDIV expression .)
-    OPDIV           reduce using rule 6 (expression -> expression OPDIV expression .)
-    OPSOMA          reduce using rule 6 (expression -> expression OPDIV expression .)
-    OPSUB           reduce using rule 6 (expression -> expression OPDIV expression .)
-    $end            reduce using rule 6 (expression -> expression OPDIV expression .)
-    FP              reduce using rule 6 (expression -> expression OPDIV expression .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 6 (expression -> expression OPDIV expression .)
-
-  ! OPMUL           [ shift and go to state 16 ]
-  ! OPDIV           [ shift and go to state 18 ]
-  ! OPSOMA          [ shift and go to state 17 ]
-  ! OPSUB           [ shift and go to state 19 ]
-
-
-state 27
-
-    (8) expression -> expression OPSUB expression .
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    OPSOMA          reduce using rule 8 (expression -> expression OPSUB expression .)
-    OPSUB           reduce using rule 8 (expression -> expression OPSUB expression .)
-    $end            reduce using rule 8 (expression -> expression OPSUB expression .)
-    FP              reduce using rule 8 (expression -> expression OPSUB expression .)
-    SIMBOLOS_ESPECIAIS_DELIMITADOR reduce using rule 8 (expression -> expression OPSUB expression .)
-    OPMUL           shift and go to state 16
-    OPDIV           shift and go to state 18
-
-  ! OPMUL           [ reduce using rule 8 (expression -> expression OPSUB expression .) ]
-  ! OPDIV           [ reduce using rule 8 (expression -> expression OPSUB expression .) ]
-  ! OPSOMA          [ shift and go to state 17 ]
-  ! OPSUB           [ shift and go to state 19 ]
-
-
-state 28
-
-    (17) var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO . expression SIMBOLOS_ESPECIAIS_DELIMITADOR
-    (5) expression -> . expression OPMUL expression
-    (6) expression -> . expression OPDIV expression
-    (7) expression -> . expression OPSOMA expression
-    (8) expression -> . expression OPSUB expression
-    (9) expression -> . AP expression FP
-    (10) expression -> . NUMERO
-    (11) expression -> . IDENTIFICADOR
-
-    AP              shift and go to state 2
-    NUMERO          shift and go to state 5
-    IDENTIFICADOR   shift and go to state 4
-
-    expression                     shift and go to state 30
-
-state 29
-
-    (15) declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration .
-
-    $end            reduce using rule 15 (declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration .)
-
-
-state 30
-
-    (17) var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression . SIMBOLOS_ESPECIAIS_DELIMITADOR
-    (5) expression -> expression . OPMUL expression
-    (6) expression -> expression . OPDIV expression
-    (7) expression -> expression . OPSOMA expression
-    (8) expression -> expression . OPSUB expression
-
-    SIMBOLOS_ESPECIAIS_DELIMITADOR shift and go to state 31
-    OPMUL           shift and go to state 16
-    OPDIV           shift and go to state 18
-    OPSOMA          shift and go to state 17
-    OPSUB           shift and go to state 19
-
-
-state 31
-
-    (17) var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR .
-
-    $end            reduce using rule 17 (var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR .)
+RES_DIFERENTE        : 35
+RES_IGUAL            : 34
+RES_MAIOR            : 39
+RES_MAIOR_IGUAL      : 38
+RES_MENOR            : 36
+RES_MENOR_IGUAL      : 37
+assignment           : 20
+block                : 1 12 13
+calling_procedure    : 21
+command              : 18 29 30 30 31
+command_conditional_1 : 23
+command_loop_1       : 24
+commands             : 17 19
+compound_command     : 2 3 4 22
+declare_procedure    : 10
+declare_variables    : 5
+empty                : 
+expression           : 26 29 30 31 56 59 60 61 62
+expression_1         : 61 63
+factor               : 48 49 50 51 52 57
+formal_parameters    : 12
+list_expression      : 
+list_expressions     : 28
+list_ids             : 7 9 15 16
+part_declare_subroutines : 3 11
+part_declare_variables : 2 6
+program              : 0
+relation             : 33
+section_formal_parameters : 14
+simple_expression    : 32 33 33
+simple_expression_1  : 40 41 47
+term                 : 40 41 42 43 44 45 46
+term_1               : 48 53
+type                 : 7
+variable             : 25 54
 

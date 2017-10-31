@@ -170,29 +170,203 @@ class Lexical:
     # Syntatic
     ##################
 
-    def p_root(p):
+    # DECLARATIONS
+    def p_program(p):
       '''
-      root : expression
-           | var_assign
-           | type_declaration
-           | empty
+      program : RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block
       '''
       print(p[1])
 
-    def p_expression(p):
+    def p_block(p):
       '''
-      expression : expression OPMUL expression
-                 | expression OPDIV expression
-                 | expression OPSOMA expression
-                 | expression OPSUB expression
-                 | AP expression FP
+      block : part_declare_variables compound_command
+            | part_declare_subroutines compound_command
+            | compound_command
       '''
       p[0] = (p[2], p[1], p[3])
 
-    def p_expression_int(p):
+    def p_part_declare_variables(p):
       '''
-      expression : NUMERO
-                 | IDENTIFICADOR
+      part_declare_variables : declare_variables SE_DELIMITADOR
+                             | part_declare_variables
+      '''
+      p[0] = p[1]
+
+    def p_declare_variables(p):
+      '''
+      declare_variables : type list_ids
+      '''
+      p[0] = (p[1], p[2])
+
+    def p_list_ids(p):
+      '''
+      list_ids : IDENTIFICADOR
+               | SE_VIRGULA list_ids
+      '''
+      p[0] = p[1]
+
+    def p_part_declare_subroutines(p):
+      '''
+      part_declare_subroutines : declare_procedure
+                               | part_declare_subroutines
+      '''
+      p[0] = p[1]
+
+    def p_declare_procedure(p):
+      '''
+      declare_procedure : RES_PROCEDURE IDENTIFICADOR formal_parameters block
+                        | RES_PROCEDURE IDENTIFICADOR block
+      '''
+      p[0] = p[1]
+
+    def p_formal_parameters(p):
+      '''
+      formal_parameters : AP section_formal_parameters FP
+      '''
+      p[0] = (p[1], p[2], p[3])
+
+    def p_section_formal_parameters(p):
+      '''
+      section_formal_parameters : RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR
+                                | list_ids SE_DOIS_PONTOS IDENTIFICADOR
+      '''
+      p[0] = p[1]
+
+
+    # COMMANDS
+    def p_compound_command(p):
+      '''
+      compound_command : RES_BEGIN commands RES_END
+      '''
+      p[0] = (p[0], p[1], p[2])
+
+    def p_commands(p):
+      '''
+      commands : command
+               | commands
+      '''
+      p[0] = p[1]
+
+
+    def p_command(p):
+      '''
+      command : assignment
+              | calling_procedure
+              | compound_command
+              | command_conditional_1
+              | command_loop_1
+      '''
+      p[0] = p[1]
+
+    def p_assignment(p):
+      '''
+      assignment : variable
+                 | expression
+      '''
+      p[0] = p[1]
+
+
+    def p_calling_procedure(p):
+      '''
+      calling_procedure : IDENTIFICADOR
+                        | IDENTIFICADOR AP list_expressions FP
+      '''
+      p[0] = p[1]
+
+    def p_command_conditional_1(p):
+      '''
+      command_conditional_1 : RES_IF expression RES_THEN command
+                            | RES_IF expression RES_THEN command RES_ELSE command
+      '''
+      p[0] = p[1]
+
+    def p_command_loop_1(p):
+      '''
+      command_loop_1 : RES_WHILE expression RES_DO command
+      '''
+      p[0] = p[1]
+
+    # EXPRESSIONS
+    def p_expression(p):
+      '''
+      expression : simple_expression
+                 | simple_expression relation simple_expression
+      '''
+      p[0] = p[1]
+
+    def p_relation(p):
+      '''
+      relation : RES_IGUAL
+               | RES_DIFERENTE                      
+               | RES_MENOR                      
+               | RES_MENOR_IGUAL                      
+               | RES_MAIOR_IGUAL                      
+               | RES_MAIOR
+      '''
+      p[0] = p[1]
+
+    def p_simple_expression(p):
+      '''
+      simple_expression : OPSOMA term simple_expression_1
+                        | OPSUB term simple_expression_1
+                        | OPSOMA term
+                        | OPSUB term
+      '''
+      p[0] = p[1]
+
+
+    def p_simple_expression_1(p):
+      '''
+      simple_expression_1 : OPSOMA term
+                          | OPSUB term
+                          | RES_OR term
+                          | simple_expression_1
+      '''
+      p[0] = p[1]
+
+    def p_term(p):
+      '''
+      term : factor term_1
+           | factor
+      '''
+      p[0] = p[1]
+
+    def p_term_1(p):
+      '''
+      term_1 : OPMUL factor
+             | RES_DIV factor
+             | RES_AND factor 
+             | term_1  
+      '''
+      p[0] = p[1]
+
+    def p_factor(p):
+      '''
+      factor : variable
+             | NUMERO
+             | AP expression FP
+             | RES_NOT factor
+      '''
+      p[0] = p[1]
+
+    def p_variable(p):
+      '''
+      variable : IDENTIFICADOR
+               | IDENTIFICADOR expression
+      '''
+      p[0] = p[1]
+
+    def p_list_expression(p):
+      '''
+      list_expression : expression
+                      | expression expression_1
+      '''
+      p[0] = p[1]
+
+    def p_expression_1(p):
+      '''
+      expression_1 : SE_VIRGULA expression
+                   | expression_1
       '''
       p[0] = p[1]
 
@@ -202,25 +376,10 @@ class Lexical:
       '''
       p[0] = None
 
-    def p_type_declaration(p):
-      '''
-        type_declaration : RES_INT declaration
-                         | RES_BOOLEAN declaration
-      '''
-      p[0] = (p[1], p[2])
-
-    def p_declaration(p):
-      '''
-        declaration : IDENTIFICADOR SE_VIRGULA declaration
-                    | IDENTIFICADOR SE_DELIMITADOR
-      '''
-      p[0] = p[1]
-
-    def p_var_assign(p):
-      '''
-      var_assign : RES_VAR IDENTIFICADOR SE_ATRIBUICAO expression SE_DELIMITADOR
-      '''
-      p[0] = (p[3], p[2], p[4])
+    def p_error(p):
+      if p is not None:
+        raise ParserSyntaxError("Syntax error at line %d, illegal token '%s' found" % (p.lineno, p.value))
+      raise ParserSyntaxError("Unexpected end of input")
 
 
     parser = yacc.yacc()
