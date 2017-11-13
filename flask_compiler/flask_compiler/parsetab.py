@@ -5,9 +5,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftOPSOMAOPSUBleftOPMULOPDIVOPSOMA OPSUB OPMUL OPDIV NUMERO IDENTIFICADOR SIMBOLOS_ESPECIAIS_MAIOR SIMBOLOS_ESPECIAIS_MENOR SIMBOLOS_ESPECIAIS_MENOR_IGUAL SIMBOLOS_ESPECIAIS_MAIOR_IGUAL SIMBOLOS_ESPECIAIS_ATRIBUICAO SIMBOLOS_ESPECIAIS_DELIMITADOR SIMBOLOS_ESPECIAIS_VIRGULA SIMBOLOS_ESPECIAIS_DOIS_PONTOS SIMBOLOS_ESPECIAIS_PONTO_FINAL COMENTARIOS_UMA_LINHA COMENTARIOMULTILINHA FIMCOMENTARIO AP FP PALAVRA_RESERVADA_THEN PALAVRA_RESERVADA_BEGIN PALAVRA_RESERVADA_DO PALAVRA_RESERVADA_INT PALAVRA_RESERVADA_ELSE PALAVRA_RESERVADA_BOOLEAN PALAVRA_RESERVADA_IF PALAVRA_RESERVADA_END PALAVRA_RESERVADA_WHILE PALAVRA_RESERVADA_PROGRAM PALAVRA_RESERVADA_VAR PALAVRA_RESERVADA_PROCEDURE\n      root : expression\n           | var_assign\n           | type_declaration\n           | empty\n      \n      expression : expression OPMUL expression\n                 | expression OPDIV expression\n                 | expression OPSOMA expression\n                 | expression OPSUB expression\n                 | AP expression FP\n      \n      expression : NUMERO\n                 | IDENTIFICADOR\n      \n      empty :\n      \n        type_declaration : PALAVRA_RESERVADA_INT declaration\n                         | PALAVRA_RESERVADA_BOOLEAN declaration\n      \n        declaration : IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration\n                    | IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR\n      \n      var_assign : PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR\n      '
+_lr_signature = 'OPSOMA OPSUB OPMUL OPDIV NUMERO IDENTIFICADOR SE_IGUAL SE_MAIOR SE_MENOR SE_MENOR_IGUAL SE_MAIOR_IGUAL SE_DIFERENTE SE_ATRIBUICAO SE_DELIMITADOR SE_VIRGULA SE_DOIS_PONTOS SE_PONTO_FINAL COMENTARIOS_UMA_LINHA COMENTARIOMULTILINHA FIMCOMENTARIO AP FP RES_AND RES_THEN RES_BEGIN RES_END RES_DO RES_INT RES_ELSE RES_NOT RES_WHILE RES_PROGRAM RES_BOOLEAN RES_VAR RES_DIV RES_OR RES_PROCEDURE RES_IF\n      program : RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block\n      \n      block : part_declare_variables compound_command\n            | part_declare_subroutines compound_command\n            | compound_command\n      \n      part_declare_variables : declare_variables SE_DELIMITADOR part_declare_variables\n                             | empty\n      \n      type : RES_INT\n           | RES_BOOLEAN\n      \n      declare_variables : type list_ids\n      \n      list_ids : IDENTIFICADOR\n               | SE_VIRGULA list_ids\n               | empty\n      \n      part_declare_subroutines : declare_procedure part_declare_subroutines\n                               | empty\n      \n      declare_procedure : RES_PROCEDURE IDENTIFICADOR formal_parameters block\n                        | RES_PROCEDURE IDENTIFICADOR block\n      \n      formal_parameters : AP section_formal_parameters FP\n      \n      section_formal_parameters : RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR\n                                | list_ids SE_DOIS_PONTOS IDENTIFICADOR\n      \n      compound_command : RES_BEGIN commands RES_END\n      \n      commands : command\n               | commands\n      \n      command : assignment\n              | calling_procedure\n              | compound_command\n              | command_conditional_1\n              | command_loop_1\n      \n      assignment : variable\n                 | expression\n      \n      calling_procedure : IDENTIFICADOR\n                        | IDENTIFICADOR AP list_expression FP\n      \n      command_conditional_1 : RES_IF expression RES_THEN command\n                            | RES_IF expression RES_THEN command RES_ELSE command\n      \n      command_loop_1 : RES_WHILE expression RES_DO command\n      \n      expression : simple_expression\n                 | simple_expression relation simple_expression\n      \n      relation : SE_IGUAL\n               | SE_DIFERENTE                      \n               | SE_MENOR                      \n               | SE_MENOR_IGUAL                      \n               | SE_MAIOR_IGUAL                      \n               | SE_MAIOR\n      \n      simple_expression : OPSOMA term simple_expression_1\n                        | OPSUB term simple_expression_1\n                        | OPSOMA term\n                        | OPSUB term\n      \n      simple_expression_1 : OPSOMA term simple_expression_1\n                          | OPSUB term simple_expression_1\n                          | RES_OR term simple_expression_1\n                          | empty\n      \n      term : factor term_1\n           | factor\n      \n      term_1 : OPMUL factor\n             | RES_DIV factor\n             | RES_AND factor \n             | term_1  \n      \n      factor : variable\n             | NUMERO\n             | AP expression FP\n             | RES_NOT factor\n      \n      variable : IDENTIFICADOR\n               | IDENTIFICADOR expression\n      \n      list_expression : expression\n                      | expression expression_1\n      \n      expression_1 : SE_VIRGULA expression\n                   | expression_1\n      \n      empty :\n      '
     
-_lr_action_items = {'FP':([4,5,14,23,24,25,26,27,],[-11,-10,23,-9,-5,-7,-6,-8,]),'PALAVRA_RESERVADA_INT':([0,],[1,]),'OPDIV':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,18,18,-9,-5,18,-6,18,18,]),'SIMBOLOS_ESPECIAIS_DELIMITADOR':([4,5,12,23,24,25,26,27,30,],[-11,-10,21,-9,-5,-7,-6,-8,31,]),'AP':([0,2,16,17,18,19,28,],[2,2,2,2,2,2,2,]),'PALAVRA_RESERVADA_VAR':([0,],[10,]),'OPSOMA':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,17,17,-9,-5,-7,-6,-8,17,]),'OPSUB':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,19,19,-9,-5,-7,-6,-8,19,]),'NUMERO':([0,2,16,17,18,19,28,],[5,5,5,5,5,5,5,]),'PALAVRA_RESERVADA_BOOLEAN':([0,],[7,]),'SIMBOLOS_ESPECIAIS_ATRIBUICAO':([20,],[28,]),'SIMBOLOS_ESPECIAIS_VIRGULA':([12,],[22,]),'OPMUL':([4,5,9,14,23,24,25,26,27,30,],[-11,-10,16,16,-9,-5,16,-6,16,16,]),'IDENTIFICADOR':([0,1,2,7,10,16,17,18,19,22,28,],[4,12,4,12,20,4,4,4,4,12,4,]),'$end':([0,3,4,5,6,8,9,11,13,15,21,23,24,25,26,27,29,31,],[-12,0,-11,-10,-3,-2,-1,-4,-13,-14,-16,-9,-5,-7,-6,-8,-15,-17,]),}
+_lr_action_items = {'FP':([18,42,45,46,47,48,58,61,71,72,73,74,75,79,81,82,84,85,89,90,91,92,93,94,95,98,104,105,106,108,109,112,],[-35,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,92,-51,-36,97,-63,-44,101,-67,-67,-67,-59,-53,-55,-54,-64,-47,-48,-49,-65,-19,-18,]),'SE_DIFERENTE':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[49,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'SE_DOIS_PONTOS':([32,34,35,62,65,86,87,103,],[-10,-67,-12,-11,-67,102,-67,110,]),'SE_IGUAL':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[52,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_PROCEDURE':([4,9,14,37,38,41,60,66,67,88,101,],[16,-4,16,-2,-3,16,-20,16,-16,-15,-17,]),'RES_ELSE':([18,20,21,22,23,24,26,28,31,42,45,46,47,48,58,60,61,71,72,73,75,79,84,89,90,91,92,93,94,95,96,97,100,104,105,106,111,],[-35,-26,-25,-23,-30,-27,-28,-24,-29,-45,-61,-58,-57,-52,-62,-20,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,107,-31,-34,-47,-48,-49,-33,]),'RES_END':([18,20,21,22,23,24,26,27,28,30,31,42,45,46,47,48,58,60,61,71,72,73,75,79,84,89,90,91,92,93,94,95,96,97,100,104,105,106,111,],[-35,-26,-25,-23,-30,-27,-28,60,-24,-21,-29,-45,-61,-58,-57,-52,-62,-20,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-32,-31,-34,-47,-48,-49,-33,]),'RES_IF':([6,80,83,107,],[19,19,19,19,]),'RES_THEN':([18,42,45,46,47,48,56,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,-45,-61,-58,-57,-52,80,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'SE_DELIMITADOR':([3,5,7,8,10,32,33,34,35,62,],[4,-7,-8,-67,36,-10,-9,-67,-12,-11,]),'OPSOMA':([6,18,19,23,25,42,44,45,46,47,48,49,50,51,52,53,54,55,57,58,61,71,72,73,75,79,80,83,84,89,90,91,92,93,94,95,99,104,105,106,107,],[17,-35,17,17,17,68,17,17,-58,-57,-52,-38,-39,-42,-37,-40,17,-41,17,-62,68,-43,-50,-60,-51,-36,17,17,-44,68,68,68,-59,-53,-55,-54,17,-47,-48,-49,17,]),'SE_MAIOR':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[51,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_VAR':([65,],[87,]),'RES_OR':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,70,-61,-58,-57,-52,-62,70,-43,-50,-60,-51,-36,-44,70,70,70,-59,-53,-55,-54,-47,-48,-49,]),'OPMUL':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,-45,-61,-58,-57,76,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'$end':([1,9,15,37,38,60,],[0,-4,-1,-2,-3,-20,]),'SE_MENOR':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[50,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_DIV':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,-45,-61,-58,-57,78,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'IDENTIFICADOR':([2,5,6,7,8,16,17,29,34,43,65,68,69,70,76,77,78,80,83,87,102,107,110,],[3,-7,23,-8,32,41,45,45,32,45,32,45,45,45,45,45,45,23,23,32,109,23,112,]),'NUMERO':([17,29,43,68,69,70,76,77,78,],[46,46,46,46,46,46,46,46,46,]),'AP':([17,23,29,41,43,68,69,70,76,77,78,],[44,57,44,65,44,44,44,44,44,44,44,]),'SE_MENOR_IGUAL':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[53,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_WHILE':([6,80,83,107,],[25,25,25,25,]),'RES_AND':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,-45,-61,-58,-57,77,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_DO':([18,42,45,46,47,48,58,59,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[-35,-45,-61,-58,-57,-52,-62,83,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_INT':([4,36,41,66,101,],[5,5,5,5,-17,]),'RES_BEGIN':([4,6,9,11,12,13,14,36,37,38,39,40,41,60,63,64,66,67,80,83,88,101,107,],[6,6,-4,6,-6,6,-67,-67,-2,-3,-13,-14,6,-20,-5,-6,6,-16,6,6,-15,-17,6,]),'RES_NOT':([17,29,43,68,69,70,76,77,78,],[43,43,43,43,43,43,43,43,43,]),'OPSUB':([6,18,19,23,25,42,44,45,46,47,48,49,50,51,52,53,54,55,57,58,61,71,72,73,75,79,80,83,84,89,90,91,92,93,94,95,99,104,105,106,107,],[29,-35,29,29,29,69,29,29,-58,-57,-52,-38,-39,-42,-37,-40,29,-41,29,-62,69,-43,-50,-60,-51,-36,29,29,-44,69,69,69,-59,-53,-55,-54,29,-47,-48,-49,29,]),'SE_VIRGULA':([5,7,8,18,34,42,45,46,47,48,58,61,65,71,72,73,75,79,82,84,87,89,90,91,92,93,94,95,104,105,106,],[-7,-8,34,-35,34,-45,-61,-58,-57,-52,-62,-46,34,-43,-50,-60,-51,-36,99,-44,34,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_BOOLEAN':([4,36,41,66,101,],[7,7,7,7,-17,]),'SE_MAIOR_IGUAL':([18,42,45,46,47,48,58,61,71,72,73,75,79,84,89,90,91,92,93,94,95,104,105,106,],[55,-45,-61,-58,-57,-52,-62,-46,-43,-50,-60,-51,-36,-44,-67,-67,-67,-59,-53,-55,-54,-47,-48,-49,]),'RES_PROGRAM':([0,],[2,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,2,16,17,18,19,28,],[9,14,24,25,26,27,30,]),'type_declaration':([0,],[6,]),'declaration':([1,7,22,],[13,15,29,]),'var_assign':([0,],[8,]),'root':([0,],[3,]),'empty':([0,],[11,]),}
+_lr_goto_items = {'calling_procedure':([6,80,83,107,],[28,28,28,28,]),'declare_variables':([4,36,41,66,],[10,10,10,10,]),'relation':([18,],[54,]),'simple_expression_1':([42,61,89,90,91,],[71,84,104,105,106,]),'declare_procedure':([4,14,41,66,],[14,14,14,14,]),'simple_expression':([6,19,23,25,44,45,54,57,80,83,99,107,],[18,18,18,18,18,18,79,18,18,18,18,18,]),'command_conditional_1':([6,80,83,107,],[20,20,20,20,]),'compound_command':([4,6,11,13,41,66,80,83,107,],[9,21,37,38,9,9,21,21,21,]),'term_1':([48,],[75,]),'program':([0,],[1,]),'factor':([17,29,43,68,69,70,76,77,78,],[48,48,73,48,48,48,93,94,95,]),'part_declare_subroutines':([4,14,41,66,],[13,39,13,13,]),'type':([4,36,41,66,],[8,8,8,8,]),'empty':([4,8,14,34,36,41,42,61,65,66,87,89,90,91,],[12,35,40,35,64,12,72,72,35,12,35,72,72,72,]),'list_expression':([57,],[81,]),'assignment':([6,80,83,107,],[22,22,22,22,]),'expression_1':([82,],[98,]),'term':([17,29,68,69,70,],[42,61,89,90,91,]),'part_declare_variables':([4,36,41,66,],[11,63,11,11,]),'variable':([6,17,29,43,68,69,70,76,77,78,80,83,107,],[26,47,47,47,47,47,47,47,47,47,26,26,26,]),'section_formal_parameters':([65,],[85,]),'command_loop_1':([6,80,83,107,],[24,24,24,24,]),'commands':([6,],[27,]),'list_ids':([8,34,65,87,],[33,62,86,103,]),'formal_parameters':([41,],[66,]),'command':([6,80,83,107,],[30,96,100,111,]),'expression':([6,19,23,25,44,45,57,80,83,99,107,],[31,56,58,59,74,58,82,31,31,108,31,]),'block':([4,41,66,],[15,67,88,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -25,22 +25,72 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> root","S'",1,None,None,None),
-  ('root -> expression','root',1,'p_root','lexical.py',168),
-  ('root -> var_assign','root',1,'p_root','lexical.py',169),
-  ('root -> type_declaration','root',1,'p_root','lexical.py',170),
-  ('root -> empty','root',1,'p_root','lexical.py',171),
-  ('expression -> expression OPMUL expression','expression',3,'p_expression','lexical.py',177),
-  ('expression -> expression OPDIV expression','expression',3,'p_expression','lexical.py',178),
-  ('expression -> expression OPSOMA expression','expression',3,'p_expression','lexical.py',179),
-  ('expression -> expression OPSUB expression','expression',3,'p_expression','lexical.py',180),
-  ('expression -> AP expression FP','expression',3,'p_expression','lexical.py',181),
-  ('expression -> NUMERO','expression',1,'p_expression_int_float','lexical.py',187),
-  ('expression -> IDENTIFICADOR','expression',1,'p_expression_int_float','lexical.py',188),
-  ('empty -> <empty>','empty',0,'p_empty','lexical.py',194),
-  ('type_declaration -> PALAVRA_RESERVADA_INT declaration','type_declaration',2,'p_type_declaration','lexical.py',200),
-  ('type_declaration -> PALAVRA_RESERVADA_BOOLEAN declaration','type_declaration',2,'p_type_declaration','lexical.py',201),
-  ('declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_VIRGULA declaration','declaration',3,'p_declaration','lexical.py',207),
-  ('declaration -> IDENTIFICADOR SIMBOLOS_ESPECIAIS_DELIMITADOR','declaration',2,'p_declaration','lexical.py',208),
-  ('var_assign -> PALAVRA_RESERVADA_VAR IDENTIFICADOR SIMBOLOS_ESPECIAIS_ATRIBUICAO expression SIMBOLOS_ESPECIAIS_DELIMITADOR','var_assign',5,'p_var_assign','lexical.py',214),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block','program',4,'p_program','syntatic.py',18),
+  ('block -> part_declare_variables compound_command','block',2,'p_block','syntatic.py',24),
+  ('block -> part_declare_subroutines compound_command','block',2,'p_block','syntatic.py',25),
+  ('block -> compound_command','block',1,'p_block','syntatic.py',26),
+  ('part_declare_variables -> declare_variables SE_DELIMITADOR part_declare_variables','part_declare_variables',3,'p_part_declare_variables','syntatic.py',32),
+  ('part_declare_variables -> empty','part_declare_variables',1,'p_part_declare_variables','syntatic.py',33),
+  ('type -> RES_INT','type',1,'p_type','syntatic.py',39),
+  ('type -> RES_BOOLEAN','type',1,'p_type','syntatic.py',40),
+  ('declare_variables -> type list_ids','declare_variables',2,'p_declare_variables','syntatic.py',45),
+  ('list_ids -> IDENTIFICADOR','list_ids',1,'p_list_ids','syntatic.py',51),
+  ('list_ids -> SE_VIRGULA list_ids','list_ids',2,'p_list_ids','syntatic.py',52),
+  ('list_ids -> empty','list_ids',1,'p_list_ids','syntatic.py',53),
+  ('part_declare_subroutines -> declare_procedure part_declare_subroutines','part_declare_subroutines',2,'p_part_declare_subroutines','syntatic.py',59),
+  ('part_declare_subroutines -> empty','part_declare_subroutines',1,'p_part_declare_subroutines','syntatic.py',60),
+  ('declare_procedure -> RES_PROCEDURE IDENTIFICADOR formal_parameters block','declare_procedure',4,'p_declare_procedure','syntatic.py',66),
+  ('declare_procedure -> RES_PROCEDURE IDENTIFICADOR block','declare_procedure',3,'p_declare_procedure','syntatic.py',67),
+  ('formal_parameters -> AP section_formal_parameters FP','formal_parameters',3,'p_formal_parameters','syntatic.py',73),
+  ('section_formal_parameters -> RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR','section_formal_parameters',4,'p_section_formal_parameters','syntatic.py',79),
+  ('section_formal_parameters -> list_ids SE_DOIS_PONTOS IDENTIFICADOR','section_formal_parameters',3,'p_section_formal_parameters','syntatic.py',80),
+  ('compound_command -> RES_BEGIN commands RES_END','compound_command',3,'p_compound_command','syntatic.py',88),
+  ('commands -> command','commands',1,'p_commands','syntatic.py',94),
+  ('commands -> commands','commands',1,'p_commands','syntatic.py',95),
+  ('command -> assignment','command',1,'p_command','syntatic.py',102),
+  ('command -> calling_procedure','command',1,'p_command','syntatic.py',103),
+  ('command -> compound_command','command',1,'p_command','syntatic.py',104),
+  ('command -> command_conditional_1','command',1,'p_command','syntatic.py',105),
+  ('command -> command_loop_1','command',1,'p_command','syntatic.py',106),
+  ('assignment -> variable','assignment',1,'p_assignment','syntatic.py',112),
+  ('assignment -> expression','assignment',1,'p_assignment','syntatic.py',113),
+  ('calling_procedure -> IDENTIFICADOR','calling_procedure',1,'p_calling_procedure','syntatic.py',120),
+  ('calling_procedure -> IDENTIFICADOR AP list_expression FP','calling_procedure',4,'p_calling_procedure','syntatic.py',121),
+  ('command_conditional_1 -> RES_IF expression RES_THEN command','command_conditional_1',4,'p_command_conditional_1','syntatic.py',127),
+  ('command_conditional_1 -> RES_IF expression RES_THEN command RES_ELSE command','command_conditional_1',6,'p_command_conditional_1','syntatic.py',128),
+  ('command_loop_1 -> RES_WHILE expression RES_DO command','command_loop_1',4,'p_command_loop_1','syntatic.py',134),
+  ('expression -> simple_expression','expression',1,'p_expression','syntatic.py',141),
+  ('expression -> simple_expression relation simple_expression','expression',3,'p_expression','syntatic.py',142),
+  ('relation -> SE_IGUAL','relation',1,'p_relation','syntatic.py',148),
+  ('relation -> SE_DIFERENTE','relation',1,'p_relation','syntatic.py',149),
+  ('relation -> SE_MENOR','relation',1,'p_relation','syntatic.py',150),
+  ('relation -> SE_MENOR_IGUAL','relation',1,'p_relation','syntatic.py',151),
+  ('relation -> SE_MAIOR_IGUAL','relation',1,'p_relation','syntatic.py',152),
+  ('relation -> SE_MAIOR','relation',1,'p_relation','syntatic.py',153),
+  ('simple_expression -> OPSOMA term simple_expression_1','simple_expression',3,'p_simple_expression','syntatic.py',159),
+  ('simple_expression -> OPSUB term simple_expression_1','simple_expression',3,'p_simple_expression','syntatic.py',160),
+  ('simple_expression -> OPSOMA term','simple_expression',2,'p_simple_expression','syntatic.py',161),
+  ('simple_expression -> OPSUB term','simple_expression',2,'p_simple_expression','syntatic.py',162),
+  ('simple_expression_1 -> OPSOMA term simple_expression_1','simple_expression_1',3,'p_simple_expression_1','syntatic.py',169),
+  ('simple_expression_1 -> OPSUB term simple_expression_1','simple_expression_1',3,'p_simple_expression_1','syntatic.py',170),
+  ('simple_expression_1 -> RES_OR term simple_expression_1','simple_expression_1',3,'p_simple_expression_1','syntatic.py',171),
+  ('simple_expression_1 -> empty','simple_expression_1',1,'p_simple_expression_1','syntatic.py',172),
+  ('term -> factor term_1','term',2,'p_term','syntatic.py',178),
+  ('term -> factor','term',1,'p_term','syntatic.py',179),
+  ('term_1 -> OPMUL factor','term_1',2,'p_term_1','syntatic.py',185),
+  ('term_1 -> RES_DIV factor','term_1',2,'p_term_1','syntatic.py',186),
+  ('term_1 -> RES_AND factor','term_1',2,'p_term_1','syntatic.py',187),
+  ('term_1 -> term_1','term_1',1,'p_term_1','syntatic.py',188),
+  ('factor -> variable','factor',1,'p_factor','syntatic.py',194),
+  ('factor -> NUMERO','factor',1,'p_factor','syntatic.py',195),
+  ('factor -> AP expression FP','factor',3,'p_factor','syntatic.py',196),
+  ('factor -> RES_NOT factor','factor',2,'p_factor','syntatic.py',197),
+  ('variable -> IDENTIFICADOR','variable',1,'p_variable','syntatic.py',203),
+  ('variable -> IDENTIFICADOR expression','variable',2,'p_variable','syntatic.py',204),
+  ('list_expression -> expression','list_expression',1,'p_list_expression','syntatic.py',210),
+  ('list_expression -> expression expression_1','list_expression',2,'p_list_expression','syntatic.py',211),
+  ('expression_1 -> SE_VIRGULA expression','expression_1',2,'p_expression_1','syntatic.py',217),
+  ('expression_1 -> expression_1','expression_1',1,'p_expression_1','syntatic.py',218),
+  ('empty -> <empty>','empty',0,'p_empty','syntatic.py',224),
 ]
