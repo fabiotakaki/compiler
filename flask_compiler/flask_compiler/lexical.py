@@ -9,9 +9,9 @@ class Lexical:
     return self.tokens
 
   def run(self):
-    states = (
-      ('COMENTARIOMULTILINHA','exclusive'),
-    )
+    # states = (
+    #   ('COMENTARIOMULTILINHA','exclusive'),
+    # )
 
     reserved = {
         'program':'RES_PROGRAM',
@@ -55,7 +55,7 @@ class Lexical:
       'COMENTARIOMULTILINHA',
       'FIMCOMENTARIO',
       'AP',
-      'FP',
+      'FP'
     ] + list(reserved.values())
 
     # for syntatic
@@ -94,34 +94,39 @@ class Lexical:
       r'(//.*)'
       return t 
 
-    # def t_COMENTARIOMULTILINHA(t):
-    #   r'{(.|\n)*}'
-    #   return t
+    def t_COMENTARIOMULTILINHA(t):
+      r'{(.|\n)*}'
+      return t
 
-    def t_begin_COMENTARIOMULTILINHA(t):
-      r'\{'
-      t.lexer.code_start = t.lexer.lexpos        # Record the starting position
-      t.lexer.level = 1                          # Initial brace level
-      t.lexer.begin('COMENTARIOMULTILINHA')                     # Enter 'ccode' state 
+    # def t_begin_COMENTARIOMULTILINHA(t):
+    #   r'\{'
+    #   t.lexer.code_start = t.lexer.lexpos        # Record the starting position
+    #   t.lexer.level = 1                          # Initial brace level
+    #   t.lexer.begin('COMENTARIOMULTILINHA')      # Enter 'ccode' state 
 
-    def t_COMENTARIOMULTILINHA_FIMCOMENTARIO(t):
-      r'\}'
-      t.lexer.level -=1
+    # def t_COMENTARIOMULTILINHA_FIMCOMENTARIO(t):
+    #   r'\}'
+    #   t.lexer.level -=1
 
-      # If closing brace, return the code fragment
-      if t.lexer.level == 0:
-          t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos+1]
-          t.lexer.lineno += t.value.count('\n')
-          t.lexer.begin('INITIAL')           
-          return t
+    #   # If closing brace, return the code fragment
+    #   if t.lexer.level == 0:
+    #       t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos+1]
+    #       t.lexer.lineno += t.value.count('\n')
+    #       t.lexer.begin('INITIAL')           
+    #       return t
 
-    def t_COMENTARIOMULTILINHA_COMENTARIOMULTILINHA(t):
-      r'([^{}]|\n)+'
-      pass
+    # def t_COMENTARIOMULTILINHA_COMENTARIOMULTILINHA(t):
+    #   r'([^{}]|\n)+'
+    #   pass
 
-    def t_COMENTARIOMULTILINHA_error(t):
-      lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Illegal character '%s'" % t.value)]))
-      t.lexer.skip(1)
+    # def t_COMENTARIOMULTILINHA_error(t):
+    #   lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Illegal character '%s'" % t.value)]))
+    #   t.lexer.skip(1)
+
+
+    def t_newline(t):
+      r'\n+'
+      t.lexer.lineno += len(t.value)
 
     # A regular expression rule with some action code
     def t_NUMERO(t):
@@ -133,26 +138,21 @@ class Lexical:
         t.value = int(t.value)
         return t
 
-    # Define a rule so we can track line numbers
-    def t_newline(t):
-      r'\n+'
-      t.lexer.lineno += len(t.value)
-
     # A string containing ignored characters (spaces and tabs)
-    t_ignore  = ' \t'
+    t_ignore  = ' \t\r\f\v\t'
 
     # Error handling rule
     def t_error(t):
-      lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Illegal character '%s'" % t.value)]))
+      lexical_response.append(dict([('error', True), ('string', t.value[0]), ('line', t.lineno), ('start', t.lexpos), ('message', "Illegal character '%s'" % t.value[0])]))
       t.lexer.skip(1)
 
     # Build the lexer
     lexer = lex.lex()
 
     precedence = (
-        ('left', 'OPSOMA', 'OPSUB'),
-        ('left', 'OPMUL', 'OPDIV')
-      )
+      ('left', 'OPSOMA', 'OPSUB'),
+      ('left', 'OPMUL', 'OPDIV')
+    )
 
     # Test it out
     # data = '''

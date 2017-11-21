@@ -51,7 +51,16 @@
         </table>
 
         <h1>Syntatic Result:</h1>
-        <div id="syntatic-result"></div>
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th>message</th>
+              <th>line</th>
+              <th>start column</th>
+            </tr>
+          </thead>
+          <tbody id="syntatic-result"></tbody>
+        </table>
 
         <h1>Code tested</h1>
         <div id="code-tested"></div>
@@ -81,6 +90,10 @@
 
   $('#go').click(function(){
     $.post( "/validate", { code: editor.getValue() }, function(data){
+
+      /**
+      *** LEXICAL RESPONSE
+      **/
       $('#result-lexical').html('');
       var html = '';
       for(var i=0; i<data.lexical_table.length; i++){
@@ -107,7 +120,22 @@
         }
       }
       $('#result-lexical').html(html);
-      $('#syntatic-result').html(data.syntatic_result);
+
+      /**
+      *** SYNTATIC RESPONSE
+      **/
+      var html = '';
+      for(var i=0; i<data.syntatic_result.length; i++){
+        html += `
+          <tr class="table-danger">
+            <td>`+data.syntatic_result[i].message+`</td>
+            <td>`+data.syntatic_result[i].line+`</td>
+            <td>`+data.syntatic_result[i].start+`</td>
+          </tr>`;
+      }
+
+
+      $('#syntatic-result').html(html);
       $('#code-tested').html('');
       $('#code-tested').html(data.code);
     });
