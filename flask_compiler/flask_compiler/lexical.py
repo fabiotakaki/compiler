@@ -154,11 +154,6 @@ class Lexical:
       ('left', 'OPMUL', 'OPDIV')
     )
 
-    # Test it out
-    # data = '''
-    # 3 + 4.3 * huihu 10
-    #   + -20 *2
-    # '''
     data = self.code
 
     # Give the lexer some input

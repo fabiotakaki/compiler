@@ -266,11 +266,13 @@ class Syntatic:
 
     def p_error(p):
       if p:
+        print p.lexer.lineno
+        print p.lexer
         syntatic_response.append(dict([('message', "Syntax error at token "+p.type), ('line',p.lineno), ('start', p.lexpos)]))
         # Just discard the token and tell the parser it's okay.
-        parser.errok()
+        #parser.errok()
       else:
-        print("Syntax error at EOF")
+        print("End of file!")
 
 
     syntatic_response = []
