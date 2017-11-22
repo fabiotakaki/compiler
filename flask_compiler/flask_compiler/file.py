@@ -27,4 +27,4 @@ class File:
       code = file.read()
       cr = Lexical(code)
       result = cr.run()
-      return jsonify({'code': code, 'lexical_table': result[0], 'syntatic_result': result[1]})
+      return jsonify({'code': code, 'lexical_table': result, 'syntatic_result': []})

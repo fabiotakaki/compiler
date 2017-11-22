@@ -2,164 +2,2391 @@ Created by PLY version 3.10 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    SE_DIFERENTE
     COMENTARIOMULTILINHA
     OPDIV
-    SE_PONTO_FINAL
-    SE_MAIOR
     FIMCOMENTARIO
-    SE_MENOR
     COMENTARIOS_UMA_LINHA
-    SE_MENOR_IGUAL
-    SE_ATRIBUICAO
-    RES_INT
-    RES_BOOLEAN
-    SE_MAIOR_IGUAL
 
 Grammar
 
 Rule 0     S' -> program
-Rule 1     program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block
-Rule 2     block -> part_declare_variables compound_command
-Rule 3     block -> part_declare_subroutines compound_command
-Rule 4     block -> compound_command
-Rule 5     part_declare_variables -> declare_variables SE_DELIMITADOR
-Rule 6     part_declare_variables -> part_declare_variables
-Rule 7     declare_variables -> type list_ids
-Rule 8     list_ids -> IDENTIFICADOR
-Rule 9     list_ids -> SE_VIRGULA list_ids
-Rule 10    part_declare_subroutines -> declare_procedure
-Rule 11    part_declare_subroutines -> part_declare_subroutines
-Rule 12    declare_procedure -> RES_PROCEDURE IDENTIFICADOR formal_parameters block
-Rule 13    declare_procedure -> RES_PROCEDURE IDENTIFICADOR block
-Rule 14    formal_parameters -> AP section_formal_parameters FP
-Rule 15    section_formal_parameters -> RES_VAR list_ids SE_DOIS_PONTOS IDENTIFICADOR
-Rule 16    section_formal_parameters -> list_ids SE_DOIS_PONTOS IDENTIFICADOR
-Rule 17    compound_command -> RES_BEGIN commands RES_END
-Rule 18    commands -> command
-Rule 19    commands -> commands
-Rule 20    command -> assignment
-Rule 21    command -> calling_procedure
-Rule 22    command -> compound_command
-Rule 23    command -> command_conditional_1
-Rule 24    command -> command_loop_1
-Rule 25    assignment -> variable
-Rule 26    assignment -> expression
-Rule 27    calling_procedure -> IDENTIFICADOR
-Rule 28    calling_procedure -> IDENTIFICADOR AP list_expressions FP
-Rule 29    command_conditional_1 -> RES_IF expression RES_THEN command
-Rule 30    command_conditional_1 -> RES_IF expression RES_THEN command RES_ELSE command
-Rule 31    command_loop_1 -> RES_WHILE expression RES_DO command
-Rule 32    expression -> simple_expression
-Rule 33    expression -> simple_expression relation simple_expression
-Rule 34    relation -> RES_IGUAL
-Rule 35    relation -> RES_DIFERENTE
-Rule 36    relation -> RES_MENOR
-Rule 37    relation -> RES_MENOR_IGUAL
-Rule 38    relation -> RES_MAIOR_IGUAL
-Rule 39    relation -> RES_MAIOR
-Rule 40    simple_expression -> OPSOMA term simple_expression_1
-Rule 41    simple_expression -> OPSUB term simple_expression_1
-Rule 42    simple_expression -> OPSOMA term
-Rule 43    simple_expression -> OPSUB term
-Rule 44    simple_expression_1 -> OPSOMA term
-Rule 45    simple_expression_1 -> OPSUB term
-Rule 46    simple_expression_1 -> RES_OR term
-Rule 47    simple_expression_1 -> simple_expression_1
-Rule 48    term -> factor term_1
-Rule 49    term -> factor
-Rule 50    term_1 -> OPMUL factor
-Rule 51    term_1 -> RES_DIV factor
-Rule 52    term_1 -> RES_AND factor
-Rule 53    term_1 -> term_1
-Rule 54    factor -> variable
-Rule 55    factor -> NUMERO
-Rule 56    factor -> AP expression FP
-Rule 57    factor -> RES_NOT factor
-Rule 58    variable -> IDENTIFICADOR
-Rule 59    variable -> IDENTIFICADOR expression
-Rule 60    list_expression -> expression
-Rule 61    list_expression -> expression expression_1
-Rule 62    expression_1 -> SE_VIRGULA expression
-Rule 63    expression_1 -> expression_1
-Rule 64    empty -> <empty>
+Rule 1     program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block SE_PONTO_FINAL
+Rule 2     block -> part_declare_variables declare_procedure compound_command
+Rule 3     type -> RES_INT
+Rule 4     type -> RES_BOOLEAN
+Rule 5     part_declare_variables -> declare_variables part_declare_variables_loop
+Rule 6     part_declare_variables -> empty
+Rule 7     part_declare_variables_loop -> SE_DELIMITADOR part_declare_variables
+Rule 8     part_declare_variables_loop -> empty
+Rule 9     declare_variables -> type list_ids
+Rule 10    list_ids -> IDENTIFICADOR list_ids_loop
+Rule 11    list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop
+Rule 12    list_ids_loop -> empty
+Rule 13    declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR block SE_DELIMITADOR
+Rule 14    declare_procedure -> empty
+Rule 15    param_form -> AP param_form_1 param_form_1_loop FP
+Rule 16    param_form -> empty
+Rule 17    param_form_1 -> RES_VAR list_ids SE_DOIS_PONTOS type
+Rule 18    param_form_1 -> list_ids SE_DOIS_PONTOS type
+Rule 19    param_form_1_loop -> SE_DELIMITADOR param_form_1 param_form_1_loop
+Rule 20    param_form_1_loop -> empty
+Rule 21    compound_command -> RES_BEGIN command command_loop RES_END
+Rule 22    command_loop -> SE_DELIMITADOR command command_loop
+Rule 23    command_loop -> empty
+Rule 24    command -> start_ident
+Rule 25    command -> compound_command
+Rule 26    command -> conditional_command
+Rule 27    command -> loop_command
+Rule 28    start_ident -> IDENTIFICADOR opt_ident
+Rule 29    opt_ident -> SE_ATRIBUICAO expression
+Rule 30    opt_ident -> opt_expression_list
+Rule 31    opt_ident -> opt_expression
+Rule 32    opt_expression_list -> AP list_expression FP
+Rule 33    opt_expression_list -> empty
+Rule 34    opt_expression -> expression
+Rule 35    opt_expression -> empty
+Rule 36    conditional_command -> RES_IF expression RES_THEN command opt_else
+Rule 37    opt_else -> RES_ELSE command
+Rule 38    opt_else -> empty
+Rule 39    loop_command -> RES_WHILE expression RES_DO command
+Rule 40    expression -> simple_expression opt_relation
+Rule 41    opt_relation -> relation simple_expression
+Rule 42    opt_relation -> empty
+Rule 43    relation -> SE_IGUAL
+Rule 44    relation -> SE_DIFERENTE
+Rule 45    relation -> SE_MENOR
+Rule 46    relation -> SE_MENOR_IGUAL
+Rule 47    relation -> SE_MAIOR_IGUAL
+Rule 48    relation -> SE_MAIOR
+Rule 49    simple_expression -> opt_signal term term_loop
+Rule 50    signal -> OPSOMA
+Rule 51    signal -> OPSUB
+Rule 52    opt_signal -> signal
+Rule 53    opt_signal -> empty
+Rule 54    term_loop -> signal term term_loop
+Rule 55    term_loop -> RES_OR term term_loop
+Rule 56    term_loop -> empty
+Rule 57    term -> factor factor_loop
+Rule 58    factor_loop -> OPMUL factor factor_loop
+Rule 59    factor_loop -> RES_DIV factor factor_loop
+Rule 60    factor_loop -> RES_AND factor factor_loop
+Rule 61    factor_loop -> empty
+Rule 62    variable -> IDENTIFICADOR opt_expression
+Rule 63    factor -> variable
+Rule 64    factor -> NUMERO
+Rule 65    factor -> AP expression FP
+Rule 66    factor -> RES_NOT factor
+Rule 67    list_expression -> expression loop_expression
+Rule 68    loop_expression -> SE_VIRGULA expression loop_expression
+Rule 69    loop_expression -> empty
+Rule 70    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AP                   : 14 28 56
+AP                   : 15 32 65
 COMENTARIOMULTILINHA : 
 COMENTARIOS_UMA_LINHA : 
 FIMCOMENTARIO        : 
-FP                   : 14 28 56
-IDENTIFICADOR        : 1 8 12 13 15 16 27 28 58 59
-NUMERO               : 55
+FP                   : 15 32 65
+IDENTIFICADOR        : 1 10 11 13 28 62
+NUMERO               : 64
 OPDIV                : 
-OPMUL                : 50
-OPSOMA               : 40 42 44
-OPSUB                : 41 43 45
-RES_AND              : 52
-RES_BEGIN            : 17
-RES_BOOLEAN          : 
-RES_DIV              : 51
-RES_DO               : 31
-RES_ELSE             : 30
-RES_END              : 17
-RES_IF               : 29 30
-RES_INT              : 
-RES_NOT              : 57
-RES_OR               : 46
-RES_PROCEDURE        : 12 13
+OPMUL                : 58
+OPSOMA               : 50
+OPSUB                : 51
+RES_AND              : 60
+RES_BEGIN            : 21
+RES_BOOLEAN          : 4
+RES_DIV              : 59
+RES_DO               : 39
+RES_ELSE             : 37
+RES_END              : 21
+RES_IF               : 36
+RES_INT              : 3
+RES_NOT              : 66
+RES_OR               : 55
+RES_PROCEDURE        : 13
 RES_PROGRAM          : 1
-RES_THEN             : 29 30
-RES_VAR              : 15
-RES_WHILE            : 31
-SE_ATRIBUICAO        : 
-SE_DELIMITADOR       : 1 5
-SE_DIFERENTE         : 
-SE_DOIS_PONTOS       : 15 16
-SE_MAIOR             : 
-SE_MAIOR_IGUAL       : 
-SE_MENOR             : 
-SE_MENOR_IGUAL       : 
-SE_PONTO_FINAL       : 
-SE_VIRGULA           : 9 62
+RES_THEN             : 36
+RES_VAR              : 17
+RES_WHILE            : 39
+SE_ATRIBUICAO        : 29
+SE_DELIMITADOR       : 1 7 13 13 19 22
+SE_DIFERENTE         : 44
+SE_DOIS_PONTOS       : 17 18
+SE_IGUAL             : 43
+SE_MAIOR             : 48
+SE_MAIOR_IGUAL       : 47
+SE_MENOR             : 45
+SE_MENOR_IGUAL       : 46
+SE_PONTO_FINAL       : 1
+SE_VIRGULA           : 11 68
 error                : 
 
 Nonterminals, with rules where they appear
 
-RES_DIFERENTE        : 35
-RES_IGUAL            : 34
-RES_MAIOR            : 39
-RES_MAIOR_IGUAL      : 38
-RES_MENOR            : 36
-RES_MENOR_IGUAL      : 37
-assignment           : 20
-block                : 1 12 13
-calling_procedure    : 21
-command              : 18 29 30 30 31
-command_conditional_1 : 23
-command_loop_1       : 24
-commands             : 17 19
-compound_command     : 2 3 4 22
-declare_procedure    : 10
+block                : 1 13
+command              : 21 22 36 37 39
+command_loop         : 21 22
+compound_command     : 2 25
+conditional_command  : 26
+declare_procedure    : 2
 declare_variables    : 5
-empty                : 
-expression           : 26 29 30 31 56 59 60 61 62
-expression_1         : 61 63
-factor               : 48 49 50 51 52 57
-formal_parameters    : 12
-list_expression      : 
-list_expressions     : 28
-list_ids             : 7 9 15 16
-part_declare_subroutines : 3 11
-part_declare_variables : 2 6
+empty                : 6 8 12 14 16 20 23 33 35 38 42 53 56 61 69
+expression           : 29 34 36 39 65 67 68
+factor               : 57 58 59 60 66
+factor_loop          : 57 58 59 60
+list_expression      : 32
+list_ids             : 9 17 18
+list_ids_loop        : 10 11
+loop_command         : 27
+loop_expression      : 67 68
+opt_else             : 36
+opt_expression       : 31 62
+opt_expression_list  : 30
+opt_ident            : 28
+opt_relation         : 40
+opt_signal           : 49
+param_form           : 13
+param_form_1         : 15 19
+param_form_1_loop    : 15 19
+part_declare_variables : 2 7
+part_declare_variables_loop : 5
 program              : 0
-relation             : 33
-section_formal_parameters : 14
-simple_expression    : 32 33 33
-simple_expression_1  : 40 41 47
-term                 : 40 41 42 43 44 45 46
-term_1               : 48 53
-type                 : 7
-variable             : 25 54
+relation             : 41
+signal               : 52 54
+simple_expression    : 40 41
+start_ident          : 24
+term                 : 49 54 55
+term_loop            : 49 54 55
+type                 : 9 17 18
+variable             : 63
 
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block SE_PONTO_FINAL
+
+    RES_PROGRAM     shift and go to state 2
+
+    program                        shift and go to state 1
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> RES_PROGRAM . IDENTIFICADOR SE_DELIMITADOR block SE_PONTO_FINAL
+
+    IDENTIFICADOR   shift and go to state 3
+
+
+state 3
+
+    (1) program -> RES_PROGRAM IDENTIFICADOR . SE_DELIMITADOR block SE_PONTO_FINAL
+
+    SE_DELIMITADOR  shift and go to state 4
+
+
+state 4
+
+    (1) program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR . block SE_PONTO_FINAL
+    (2) block -> . part_declare_variables declare_procedure compound_command
+    (5) part_declare_variables -> . declare_variables part_declare_variables_loop
+    (6) part_declare_variables -> . empty
+    (9) declare_variables -> . type list_ids
+    (70) empty -> .
+    (3) type -> . RES_INT
+    (4) type -> . RES_BOOLEAN
+
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+    RES_INT         shift and go to state 5
+    RES_BOOLEAN     shift and go to state 6
+
+    declare_variables              shift and go to state 8
+    part_declare_variables         shift and go to state 9
+    empty                          shift and go to state 10
+    type                           shift and go to state 7
+    block                          shift and go to state 11
+
+state 5
+
+    (3) type -> RES_INT .
+
+    IDENTIFICADOR   reduce using rule 3 (type -> RES_INT .)
+    SE_DELIMITADOR  reduce using rule 3 (type -> RES_INT .)
+    FP              reduce using rule 3 (type -> RES_INT .)
+
+
+state 6
+
+    (4) type -> RES_BOOLEAN .
+
+    IDENTIFICADOR   reduce using rule 4 (type -> RES_BOOLEAN .)
+    SE_DELIMITADOR  reduce using rule 4 (type -> RES_BOOLEAN .)
+    FP              reduce using rule 4 (type -> RES_BOOLEAN .)
+
+
+state 7
+
+    (9) declare_variables -> type . list_ids
+    (10) list_ids -> . IDENTIFICADOR list_ids_loop
+
+    IDENTIFICADOR   shift and go to state 12
+
+    list_ids                       shift and go to state 13
+
+state 8
+
+    (5) part_declare_variables -> declare_variables . part_declare_variables_loop
+    (7) part_declare_variables_loop -> . SE_DELIMITADOR part_declare_variables
+    (8) part_declare_variables_loop -> . empty
+    (70) empty -> .
+
+    SE_DELIMITADOR  shift and go to state 14
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+
+    part_declare_variables_loop    shift and go to state 15
+    empty                          shift and go to state 16
+
+state 9
+
+    (2) block -> part_declare_variables . declare_procedure compound_command
+    (13) declare_procedure -> . RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR block SE_DELIMITADOR
+    (14) declare_procedure -> . empty
+    (70) empty -> .
+
+    RES_PROCEDURE   shift and go to state 18
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+
+    declare_procedure              shift and go to state 19
+    empty                          shift and go to state 17
+
+state 10
+
+    (6) part_declare_variables -> empty .
+
+    RES_PROCEDURE   reduce using rule 6 (part_declare_variables -> empty .)
+    RES_BEGIN       reduce using rule 6 (part_declare_variables -> empty .)
+
+
+state 11
+
+    (1) program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block . SE_PONTO_FINAL
+
+    SE_PONTO_FINAL  shift and go to state 20
+
+
+state 12
+
+    (10) list_ids -> IDENTIFICADOR . list_ids_loop
+    (11) list_ids_loop -> . SE_VIRGULA IDENTIFICADOR list_ids_loop
+    (12) list_ids_loop -> . empty
+    (70) empty -> .
+
+    SE_VIRGULA      shift and go to state 23
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+    SE_DOIS_PONTOS  reduce using rule 70 (empty -> .)
+
+    list_ids_loop                  shift and go to state 21
+    empty                          shift and go to state 22
+
+state 13
+
+    (9) declare_variables -> type list_ids .
+
+    SE_DELIMITADOR  reduce using rule 9 (declare_variables -> type list_ids .)
+    RES_PROCEDURE   reduce using rule 9 (declare_variables -> type list_ids .)
+    RES_BEGIN       reduce using rule 9 (declare_variables -> type list_ids .)
+
+
+state 14
+
+    (7) part_declare_variables_loop -> SE_DELIMITADOR . part_declare_variables
+    (5) part_declare_variables -> . declare_variables part_declare_variables_loop
+    (6) part_declare_variables -> . empty
+    (9) declare_variables -> . type list_ids
+    (70) empty -> .
+    (3) type -> . RES_INT
+    (4) type -> . RES_BOOLEAN
+
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+    RES_INT         shift and go to state 5
+    RES_BOOLEAN     shift and go to state 6
+
+    declare_variables              shift and go to state 8
+    part_declare_variables         shift and go to state 24
+    type                           shift and go to state 7
+    empty                          shift and go to state 10
+
+state 15
+
+    (5) part_declare_variables -> declare_variables part_declare_variables_loop .
+
+    RES_PROCEDURE   reduce using rule 5 (part_declare_variables -> declare_variables part_declare_variables_loop .)
+    RES_BEGIN       reduce using rule 5 (part_declare_variables -> declare_variables part_declare_variables_loop .)
+
+
+state 16
+
+    (8) part_declare_variables_loop -> empty .
+
+    RES_PROCEDURE   reduce using rule 8 (part_declare_variables_loop -> empty .)
+    RES_BEGIN       reduce using rule 8 (part_declare_variables_loop -> empty .)
+
+
+state 17
+
+    (14) declare_procedure -> empty .
+
+    RES_BEGIN       reduce using rule 14 (declare_procedure -> empty .)
+
+
+state 18
+
+    (13) declare_procedure -> RES_PROCEDURE . IDENTIFICADOR param_form SE_DELIMITADOR block SE_DELIMITADOR
+
+    IDENTIFICADOR   shift and go to state 25
+
+
+state 19
+
+    (2) block -> part_declare_variables declare_procedure . compound_command
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+
+    RES_BEGIN       shift and go to state 26
+
+    compound_command               shift and go to state 27
+
+state 20
+
+    (1) program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block SE_PONTO_FINAL .
+
+    $end            reduce using rule 1 (program -> RES_PROGRAM IDENTIFICADOR SE_DELIMITADOR block SE_PONTO_FINAL .)
+
+
+state 21
+
+    (10) list_ids -> IDENTIFICADOR list_ids_loop .
+
+    SE_DOIS_PONTOS  reduce using rule 10 (list_ids -> IDENTIFICADOR list_ids_loop .)
+    SE_DELIMITADOR  reduce using rule 10 (list_ids -> IDENTIFICADOR list_ids_loop .)
+    RES_PROCEDURE   reduce using rule 10 (list_ids -> IDENTIFICADOR list_ids_loop .)
+    RES_BEGIN       reduce using rule 10 (list_ids -> IDENTIFICADOR list_ids_loop .)
+
+
+state 22
+
+    (12) list_ids_loop -> empty .
+
+    SE_DELIMITADOR  reduce using rule 12 (list_ids_loop -> empty .)
+    RES_PROCEDURE   reduce using rule 12 (list_ids_loop -> empty .)
+    RES_BEGIN       reduce using rule 12 (list_ids_loop -> empty .)
+    SE_DOIS_PONTOS  reduce using rule 12 (list_ids_loop -> empty .)
+
+
+state 23
+
+    (11) list_ids_loop -> SE_VIRGULA . IDENTIFICADOR list_ids_loop
+
+    IDENTIFICADOR   shift and go to state 28
+
+
+state 24
+
+    (7) part_declare_variables_loop -> SE_DELIMITADOR part_declare_variables .
+
+    RES_PROCEDURE   reduce using rule 7 (part_declare_variables_loop -> SE_DELIMITADOR part_declare_variables .)
+    RES_BEGIN       reduce using rule 7 (part_declare_variables_loop -> SE_DELIMITADOR part_declare_variables .)
+
+
+state 25
+
+    (13) declare_procedure -> RES_PROCEDURE IDENTIFICADOR . param_form SE_DELIMITADOR block SE_DELIMITADOR
+    (15) param_form -> . AP param_form_1 param_form_1_loop FP
+    (16) param_form -> . empty
+    (70) empty -> .
+
+    AP              shift and go to state 30
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+
+    empty                          shift and go to state 31
+    param_form                     shift and go to state 29
+
+state 26
+
+    (21) compound_command -> RES_BEGIN . command command_loop RES_END
+    (24) command -> . start_ident
+    (25) command -> . compound_command
+    (26) command -> . conditional_command
+    (27) command -> . loop_command
+    (28) start_ident -> . IDENTIFICADOR opt_ident
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+    (36) conditional_command -> . RES_IF expression RES_THEN command opt_else
+    (39) loop_command -> . RES_WHILE expression RES_DO command
+
+    IDENTIFICADOR   shift and go to state 34
+    RES_BEGIN       shift and go to state 26
+    RES_IF          shift and go to state 39
+    RES_WHILE       shift and go to state 38
+
+    start_ident                    shift and go to state 32
+    loop_command                   shift and go to state 33
+    compound_command               shift and go to state 35
+    conditional_command            shift and go to state 36
+    command                        shift and go to state 37
+
+state 27
+
+    (2) block -> part_declare_variables declare_procedure compound_command .
+
+    SE_PONTO_FINAL  reduce using rule 2 (block -> part_declare_variables declare_procedure compound_command .)
+    SE_DELIMITADOR  reduce using rule 2 (block -> part_declare_variables declare_procedure compound_command .)
+
+
+state 28
+
+    (11) list_ids_loop -> SE_VIRGULA IDENTIFICADOR . list_ids_loop
+    (11) list_ids_loop -> . SE_VIRGULA IDENTIFICADOR list_ids_loop
+    (12) list_ids_loop -> . empty
+    (70) empty -> .
+
+    SE_VIRGULA      shift and go to state 23
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+    SE_DOIS_PONTOS  reduce using rule 70 (empty -> .)
+
+    list_ids_loop                  shift and go to state 40
+    empty                          shift and go to state 22
+
+state 29
+
+    (13) declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form . SE_DELIMITADOR block SE_DELIMITADOR
+
+    SE_DELIMITADOR  shift and go to state 41
+
+
+state 30
+
+    (15) param_form -> AP . param_form_1 param_form_1_loop FP
+    (17) param_form_1 -> . RES_VAR list_ids SE_DOIS_PONTOS type
+    (18) param_form_1 -> . list_ids SE_DOIS_PONTOS type
+    (10) list_ids -> . IDENTIFICADOR list_ids_loop
+
+    RES_VAR         shift and go to state 44
+    IDENTIFICADOR   shift and go to state 12
+
+    list_ids                       shift and go to state 43
+    param_form_1                   shift and go to state 42
+
+state 31
+
+    (16) param_form -> empty .
+
+    SE_DELIMITADOR  reduce using rule 16 (param_form -> empty .)
+
+
+state 32
+
+    (24) command -> start_ident .
+
+    SE_DELIMITADOR  reduce using rule 24 (command -> start_ident .)
+    RES_END         reduce using rule 24 (command -> start_ident .)
+    RES_ELSE        reduce using rule 24 (command -> start_ident .)
+
+
+state 33
+
+    (27) command -> loop_command .
+
+    SE_DELIMITADOR  reduce using rule 27 (command -> loop_command .)
+    RES_END         reduce using rule 27 (command -> loop_command .)
+    RES_ELSE        reduce using rule 27 (command -> loop_command .)
+
+
+state 34
+
+    (28) start_ident -> IDENTIFICADOR . opt_ident
+    (29) opt_ident -> . SE_ATRIBUICAO expression
+    (30) opt_ident -> . opt_expression_list
+    (31) opt_ident -> . opt_expression
+    (32) opt_expression_list -> . AP list_expression FP
+    (33) opt_expression_list -> . empty
+    (34) opt_expression -> . expression
+    (35) opt_expression -> . empty
+    (70) empty -> .
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+
+  ! shift/reduce conflict for AP resolved as shift
+    SE_ATRIBUICAO   shift and go to state 55
+    AP              shift and go to state 51
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    NUMERO          reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+
+  ! AP              [ reduce using rule 70 (empty -> .) ]
+
+    opt_expression_list            shift and go to state 45
+    opt_signal                     shift and go to state 47
+    opt_ident                      shift and go to state 50
+    opt_expression                 shift and go to state 56
+    simple_expression              shift and go to state 53
+    expression                     shift and go to state 54
+    signal                         shift and go to state 46
+    empty                          shift and go to state 52
+
+state 35
+
+    (25) command -> compound_command .
+
+    SE_DELIMITADOR  reduce using rule 25 (command -> compound_command .)
+    RES_END         reduce using rule 25 (command -> compound_command .)
+    RES_ELSE        reduce using rule 25 (command -> compound_command .)
+
+
+state 36
+
+    (26) command -> conditional_command .
+
+    SE_DELIMITADOR  reduce using rule 26 (command -> conditional_command .)
+    RES_END         reduce using rule 26 (command -> conditional_command .)
+    RES_ELSE        reduce using rule 26 (command -> conditional_command .)
+
+
+state 37
+
+    (21) compound_command -> RES_BEGIN command . command_loop RES_END
+    (22) command_loop -> . SE_DELIMITADOR command command_loop
+    (23) command_loop -> . empty
+    (70) empty -> .
+
+    SE_DELIMITADOR  shift and go to state 57
+    RES_END         reduce using rule 70 (empty -> .)
+
+    command_loop                   shift and go to state 58
+    empty                          shift and go to state 59
+
+state 38
+
+    (39) loop_command -> RES_WHILE . expression RES_DO command
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    expression                     shift and go to state 60
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 39
+
+    (36) conditional_command -> RES_IF . expression RES_THEN command opt_else
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    expression                     shift and go to state 62
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 40
+
+    (11) list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop .
+
+    SE_DELIMITADOR  reduce using rule 11 (list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop .)
+    RES_PROCEDURE   reduce using rule 11 (list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop .)
+    RES_BEGIN       reduce using rule 11 (list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop .)
+    SE_DOIS_PONTOS  reduce using rule 11 (list_ids_loop -> SE_VIRGULA IDENTIFICADOR list_ids_loop .)
+
+
+state 41
+
+    (13) declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR . block SE_DELIMITADOR
+    (2) block -> . part_declare_variables declare_procedure compound_command
+    (5) part_declare_variables -> . declare_variables part_declare_variables_loop
+    (6) part_declare_variables -> . empty
+    (9) declare_variables -> . type list_ids
+    (70) empty -> .
+    (3) type -> . RES_INT
+    (4) type -> . RES_BOOLEAN
+
+    RES_PROCEDURE   reduce using rule 70 (empty -> .)
+    RES_BEGIN       reduce using rule 70 (empty -> .)
+    RES_INT         shift and go to state 5
+    RES_BOOLEAN     shift and go to state 6
+
+    declare_variables              shift and go to state 8
+    part_declare_variables         shift and go to state 9
+    empty                          shift and go to state 10
+    type                           shift and go to state 7
+    block                          shift and go to state 63
+
+state 42
+
+    (15) param_form -> AP param_form_1 . param_form_1_loop FP
+    (19) param_form_1_loop -> . SE_DELIMITADOR param_form_1 param_form_1_loop
+    (20) param_form_1_loop -> . empty
+    (70) empty -> .
+
+    SE_DELIMITADOR  shift and go to state 64
+    FP              reduce using rule 70 (empty -> .)
+
+    param_form_1_loop              shift and go to state 65
+    empty                          shift and go to state 66
+
+state 43
+
+    (18) param_form_1 -> list_ids . SE_DOIS_PONTOS type
+
+    SE_DOIS_PONTOS  shift and go to state 67
+
+
+state 44
+
+    (17) param_form_1 -> RES_VAR . list_ids SE_DOIS_PONTOS type
+    (10) list_ids -> . IDENTIFICADOR list_ids_loop
+
+    IDENTIFICADOR   shift and go to state 12
+
+    list_ids                       shift and go to state 68
+
+state 45
+
+    (30) opt_ident -> opt_expression_list .
+
+    SE_DELIMITADOR  reduce using rule 30 (opt_ident -> opt_expression_list .)
+    RES_END         reduce using rule 30 (opt_ident -> opt_expression_list .)
+    RES_ELSE        reduce using rule 30 (opt_ident -> opt_expression_list .)
+
+
+state 46
+
+    (52) opt_signal -> signal .
+
+    NUMERO          reduce using rule 52 (opt_signal -> signal .)
+    AP              reduce using rule 52 (opt_signal -> signal .)
+    RES_NOT         reduce using rule 52 (opt_signal -> signal .)
+    IDENTIFICADOR   reduce using rule 52 (opt_signal -> signal .)
+
+
+state 47
+
+    (49) simple_expression -> opt_signal . term term_loop
+    (57) term -> . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    term                           shift and go to state 69
+    factor                         shift and go to state 74
+    variable                       shift and go to state 75
+
+state 48
+
+    (50) signal -> OPSOMA .
+
+    NUMERO          reduce using rule 50 (signal -> OPSOMA .)
+    AP              reduce using rule 50 (signal -> OPSOMA .)
+    RES_NOT         reduce using rule 50 (signal -> OPSOMA .)
+    IDENTIFICADOR   reduce using rule 50 (signal -> OPSOMA .)
+
+
+state 49
+
+    (51) signal -> OPSUB .
+
+    NUMERO          reduce using rule 51 (signal -> OPSUB .)
+    AP              reduce using rule 51 (signal -> OPSUB .)
+    RES_NOT         reduce using rule 51 (signal -> OPSUB .)
+    IDENTIFICADOR   reduce using rule 51 (signal -> OPSUB .)
+
+
+state 50
+
+    (28) start_ident -> IDENTIFICADOR opt_ident .
+
+    SE_DELIMITADOR  reduce using rule 28 (start_ident -> IDENTIFICADOR opt_ident .)
+    RES_END         reduce using rule 28 (start_ident -> IDENTIFICADOR opt_ident .)
+    RES_ELSE        reduce using rule 28 (start_ident -> IDENTIFICADOR opt_ident .)
+
+
+state 51
+
+    (32) opt_expression_list -> AP . list_expression FP
+    (67) list_expression -> . expression loop_expression
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    list_expression                shift and go to state 76
+    expression                     shift and go to state 77
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 52
+
+    (33) opt_expression_list -> empty .
+    (35) opt_expression -> empty .
+    (53) opt_signal -> empty .
+
+  ! reduce/reduce conflict for SE_DELIMITADOR resolved using rule 33 (opt_expression_list -> empty .)
+  ! reduce/reduce conflict for RES_END resolved using rule 33 (opt_expression_list -> empty .)
+  ! reduce/reduce conflict for RES_ELSE resolved using rule 33 (opt_expression_list -> empty .)
+    SE_DELIMITADOR  reduce using rule 33 (opt_expression_list -> empty .)
+    RES_END         reduce using rule 33 (opt_expression_list -> empty .)
+    RES_ELSE        reduce using rule 33 (opt_expression_list -> empty .)
+    NUMERO          reduce using rule 53 (opt_signal -> empty .)
+    AP              reduce using rule 53 (opt_signal -> empty .)
+    RES_NOT         reduce using rule 53 (opt_signal -> empty .)
+    IDENTIFICADOR   reduce using rule 53 (opt_signal -> empty .)
+
+  ! SE_DELIMITADOR  [ reduce using rule 35 (opt_expression -> empty .) ]
+  ! RES_END         [ reduce using rule 35 (opt_expression -> empty .) ]
+  ! RES_ELSE        [ reduce using rule 35 (opt_expression -> empty .) ]
+
+
+state 53
+
+    (40) expression -> simple_expression . opt_relation
+    (41) opt_relation -> . relation simple_expression
+    (42) opt_relation -> . empty
+    (43) relation -> . SE_IGUAL
+    (44) relation -> . SE_DIFERENTE
+    (45) relation -> . SE_MENOR
+    (46) relation -> . SE_MENOR_IGUAL
+    (47) relation -> . SE_MAIOR_IGUAL
+    (48) relation -> . SE_MAIOR
+    (70) empty -> .
+
+  ! shift/reduce conflict for SE_IGUAL resolved as shift
+  ! shift/reduce conflict for SE_DIFERENTE resolved as shift
+  ! shift/reduce conflict for SE_MENOR resolved as shift
+  ! shift/reduce conflict for SE_MENOR_IGUAL resolved as shift
+  ! shift/reduce conflict for SE_MAIOR_IGUAL resolved as shift
+  ! shift/reduce conflict for SE_MAIOR resolved as shift
+    SE_IGUAL        shift and go to state 82
+    SE_DIFERENTE    shift and go to state 78
+    SE_MENOR        shift and go to state 79
+    SE_MENOR_IGUAL  shift and go to state 83
+    SE_MAIOR_IGUAL  shift and go to state 85
+    SE_MAIOR        shift and go to state 81
+    RES_OR          reduce using rule 70 (empty -> .)
+    OPSOMA          reduce using rule 70 (empty -> .)
+    OPSUB           reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+    OPMUL           reduce using rule 70 (empty -> .)
+    RES_DIV         reduce using rule 70 (empty -> .)
+    RES_AND         reduce using rule 70 (empty -> .)
+
+  ! SE_IGUAL        [ reduce using rule 70 (empty -> .) ]
+  ! SE_DIFERENTE    [ reduce using rule 70 (empty -> .) ]
+  ! SE_MENOR        [ reduce using rule 70 (empty -> .) ]
+  ! SE_MENOR_IGUAL  [ reduce using rule 70 (empty -> .) ]
+  ! SE_MAIOR_IGUAL  [ reduce using rule 70 (empty -> .) ]
+  ! SE_MAIOR        [ reduce using rule 70 (empty -> .) ]
+
+    relation                       shift and go to state 84
+    opt_relation                   shift and go to state 80
+    empty                          shift and go to state 86
+
+state 54
+
+    (34) opt_expression -> expression .
+
+    SE_DELIMITADOR  reduce using rule 34 (opt_expression -> expression .)
+    RES_END         reduce using rule 34 (opt_expression -> expression .)
+    RES_ELSE        reduce using rule 34 (opt_expression -> expression .)
+    RES_OR          reduce using rule 34 (opt_expression -> expression .)
+    OPSOMA          reduce using rule 34 (opt_expression -> expression .)
+    OPSUB           reduce using rule 34 (opt_expression -> expression .)
+    SE_IGUAL        reduce using rule 34 (opt_expression -> expression .)
+    SE_DIFERENTE    reduce using rule 34 (opt_expression -> expression .)
+    SE_MENOR        reduce using rule 34 (opt_expression -> expression .)
+    SE_MENOR_IGUAL  reduce using rule 34 (opt_expression -> expression .)
+    SE_MAIOR_IGUAL  reduce using rule 34 (opt_expression -> expression .)
+    SE_MAIOR        reduce using rule 34 (opt_expression -> expression .)
+    RES_DO          reduce using rule 34 (opt_expression -> expression .)
+    RES_THEN        reduce using rule 34 (opt_expression -> expression .)
+    SE_VIRGULA      reduce using rule 34 (opt_expression -> expression .)
+    FP              reduce using rule 34 (opt_expression -> expression .)
+    OPMUL           reduce using rule 34 (opt_expression -> expression .)
+    RES_DIV         reduce using rule 34 (opt_expression -> expression .)
+    RES_AND         reduce using rule 34 (opt_expression -> expression .)
+
+
+state 55
+
+    (29) opt_ident -> SE_ATRIBUICAO . expression
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    expression                     shift and go to state 87
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 56
+
+    (31) opt_ident -> opt_expression .
+
+    SE_DELIMITADOR  reduce using rule 31 (opt_ident -> opt_expression .)
+    RES_END         reduce using rule 31 (opt_ident -> opt_expression .)
+    RES_ELSE        reduce using rule 31 (opt_ident -> opt_expression .)
+
+
+state 57
+
+    (22) command_loop -> SE_DELIMITADOR . command command_loop
+    (24) command -> . start_ident
+    (25) command -> . compound_command
+    (26) command -> . conditional_command
+    (27) command -> . loop_command
+    (28) start_ident -> . IDENTIFICADOR opt_ident
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+    (36) conditional_command -> . RES_IF expression RES_THEN command opt_else
+    (39) loop_command -> . RES_WHILE expression RES_DO command
+
+    IDENTIFICADOR   shift and go to state 34
+    RES_BEGIN       shift and go to state 26
+    RES_IF          shift and go to state 39
+    RES_WHILE       shift and go to state 38
+
+    start_ident                    shift and go to state 32
+    loop_command                   shift and go to state 33
+    compound_command               shift and go to state 35
+    conditional_command            shift and go to state 36
+    command                        shift and go to state 88
+
+state 58
+
+    (21) compound_command -> RES_BEGIN command command_loop . RES_END
+
+    RES_END         shift and go to state 89
+
+
+state 59
+
+    (23) command_loop -> empty .
+
+    RES_END         reduce using rule 23 (command_loop -> empty .)
+
+
+state 60
+
+    (39) loop_command -> RES_WHILE expression . RES_DO command
+
+    RES_DO          shift and go to state 90
+
+
+state 61
+
+    (53) opt_signal -> empty .
+
+    NUMERO          reduce using rule 53 (opt_signal -> empty .)
+    AP              reduce using rule 53 (opt_signal -> empty .)
+    RES_NOT         reduce using rule 53 (opt_signal -> empty .)
+    IDENTIFICADOR   reduce using rule 53 (opt_signal -> empty .)
+
+
+state 62
+
+    (36) conditional_command -> RES_IF expression . RES_THEN command opt_else
+
+    RES_THEN        shift and go to state 91
+
+
+state 63
+
+    (13) declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR block . SE_DELIMITADOR
+
+    SE_DELIMITADOR  shift and go to state 92
+
+
+state 64
+
+    (19) param_form_1_loop -> SE_DELIMITADOR . param_form_1 param_form_1_loop
+    (17) param_form_1 -> . RES_VAR list_ids SE_DOIS_PONTOS type
+    (18) param_form_1 -> . list_ids SE_DOIS_PONTOS type
+    (10) list_ids -> . IDENTIFICADOR list_ids_loop
+
+    RES_VAR         shift and go to state 44
+    IDENTIFICADOR   shift and go to state 12
+
+    list_ids                       shift and go to state 43
+    param_form_1                   shift and go to state 93
+
+state 65
+
+    (15) param_form -> AP param_form_1 param_form_1_loop . FP
+
+    FP              shift and go to state 94
+
+
+state 66
+
+    (20) param_form_1_loop -> empty .
+
+    FP              reduce using rule 20 (param_form_1_loop -> empty .)
+
+
+state 67
+
+    (18) param_form_1 -> list_ids SE_DOIS_PONTOS . type
+    (3) type -> . RES_INT
+    (4) type -> . RES_BOOLEAN
+
+    RES_INT         shift and go to state 5
+    RES_BOOLEAN     shift and go to state 6
+
+    type                           shift and go to state 95
+
+state 68
+
+    (17) param_form_1 -> RES_VAR list_ids . SE_DOIS_PONTOS type
+
+    SE_DOIS_PONTOS  shift and go to state 96
+
+
+state 69
+
+    (49) simple_expression -> opt_signal term . term_loop
+    (54) term_loop -> . signal term term_loop
+    (55) term_loop -> . RES_OR term term_loop
+    (56) term_loop -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+  ! shift/reduce conflict for RES_OR resolved as shift
+  ! shift/reduce conflict for OPSOMA resolved as shift
+  ! shift/reduce conflict for OPSUB resolved as shift
+    RES_OR          shift and go to state 98
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+    OPMUL           reduce using rule 70 (empty -> .)
+    RES_DIV         reduce using rule 70 (empty -> .)
+    RES_AND         reduce using rule 70 (empty -> .)
+
+  ! RES_OR          [ reduce using rule 70 (empty -> .) ]
+  ! OPSOMA          [ reduce using rule 70 (empty -> .) ]
+  ! OPSUB           [ reduce using rule 70 (empty -> .) ]
+
+    empty                          shift and go to state 100
+    signal                         shift and go to state 97
+    term_loop                      shift and go to state 99
+
+state 70
+
+    (62) variable -> IDENTIFICADOR . opt_expression
+    (34) opt_expression -> . expression
+    (35) opt_expression -> . empty
+    (40) expression -> . simple_expression opt_relation
+    (70) empty -> .
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+
+  ! shift/reduce conflict for OPSOMA resolved as shift
+  ! shift/reduce conflict for OPSUB resolved as shift
+    RES_OR          reduce using rule 70 (empty -> .)
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+    OPMUL           reduce using rule 70 (empty -> .)
+    RES_DIV         reduce using rule 70 (empty -> .)
+    RES_AND         reduce using rule 70 (empty -> .)
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+
+  ! OPSOMA          [ reduce using rule 70 (empty -> .) ]
+  ! OPSUB           [ reduce using rule 70 (empty -> .) ]
+
+    expression                     shift and go to state 54
+    opt_expression                 shift and go to state 101
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 102
+
+state 71
+
+    (66) factor -> RES_NOT . factor
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    variable                       shift and go to state 75
+    factor                         shift and go to state 103
+
+state 72
+
+    (64) factor -> NUMERO .
+
+    RES_OR          reduce using rule 64 (factor -> NUMERO .)
+    OPSOMA          reduce using rule 64 (factor -> NUMERO .)
+    OPSUB           reduce using rule 64 (factor -> NUMERO .)
+    SE_IGUAL        reduce using rule 64 (factor -> NUMERO .)
+    SE_DIFERENTE    reduce using rule 64 (factor -> NUMERO .)
+    SE_MENOR        reduce using rule 64 (factor -> NUMERO .)
+    SE_MENOR_IGUAL  reduce using rule 64 (factor -> NUMERO .)
+    SE_MAIOR_IGUAL  reduce using rule 64 (factor -> NUMERO .)
+    SE_MAIOR        reduce using rule 64 (factor -> NUMERO .)
+    SE_DELIMITADOR  reduce using rule 64 (factor -> NUMERO .)
+    RES_END         reduce using rule 64 (factor -> NUMERO .)
+    RES_ELSE        reduce using rule 64 (factor -> NUMERO .)
+    RES_DO          reduce using rule 64 (factor -> NUMERO .)
+    RES_THEN        reduce using rule 64 (factor -> NUMERO .)
+    SE_VIRGULA      reduce using rule 64 (factor -> NUMERO .)
+    FP              reduce using rule 64 (factor -> NUMERO .)
+    OPMUL           reduce using rule 64 (factor -> NUMERO .)
+    RES_DIV         reduce using rule 64 (factor -> NUMERO .)
+    RES_AND         reduce using rule 64 (factor -> NUMERO .)
+
+
+state 73
+
+    (65) factor -> AP . expression FP
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    expression                     shift and go to state 104
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 74
+
+    (57) term -> factor . factor_loop
+    (58) factor_loop -> . OPMUL factor factor_loop
+    (59) factor_loop -> . RES_DIV factor factor_loop
+    (60) factor_loop -> . RES_AND factor factor_loop
+    (61) factor_loop -> . empty
+    (70) empty -> .
+
+  ! shift/reduce conflict for OPMUL resolved as shift
+  ! shift/reduce conflict for RES_DIV resolved as shift
+  ! shift/reduce conflict for RES_AND resolved as shift
+    OPMUL           shift and go to state 106
+    RES_DIV         shift and go to state 109
+    RES_AND         shift and go to state 107
+    RES_OR          reduce using rule 70 (empty -> .)
+    OPSOMA          reduce using rule 70 (empty -> .)
+    OPSUB           reduce using rule 70 (empty -> .)
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+
+  ! OPMUL           [ reduce using rule 70 (empty -> .) ]
+  ! RES_DIV         [ reduce using rule 70 (empty -> .) ]
+  ! RES_AND         [ reduce using rule 70 (empty -> .) ]
+
+    factor_loop                    shift and go to state 105
+    empty                          shift and go to state 108
+
+state 75
+
+    (63) factor -> variable .
+
+    RES_OR          reduce using rule 63 (factor -> variable .)
+    OPSOMA          reduce using rule 63 (factor -> variable .)
+    OPSUB           reduce using rule 63 (factor -> variable .)
+    SE_IGUAL        reduce using rule 63 (factor -> variable .)
+    SE_DIFERENTE    reduce using rule 63 (factor -> variable .)
+    SE_MENOR        reduce using rule 63 (factor -> variable .)
+    SE_MENOR_IGUAL  reduce using rule 63 (factor -> variable .)
+    SE_MAIOR_IGUAL  reduce using rule 63 (factor -> variable .)
+    SE_MAIOR        reduce using rule 63 (factor -> variable .)
+    SE_DELIMITADOR  reduce using rule 63 (factor -> variable .)
+    RES_END         reduce using rule 63 (factor -> variable .)
+    RES_ELSE        reduce using rule 63 (factor -> variable .)
+    RES_DO          reduce using rule 63 (factor -> variable .)
+    RES_THEN        reduce using rule 63 (factor -> variable .)
+    SE_VIRGULA      reduce using rule 63 (factor -> variable .)
+    FP              reduce using rule 63 (factor -> variable .)
+    OPMUL           reduce using rule 63 (factor -> variable .)
+    RES_DIV         reduce using rule 63 (factor -> variable .)
+    RES_AND         reduce using rule 63 (factor -> variable .)
+
+
+state 76
+
+    (32) opt_expression_list -> AP list_expression . FP
+
+    FP              shift and go to state 110
+
+
+state 77
+
+    (67) list_expression -> expression . loop_expression
+    (68) loop_expression -> . SE_VIRGULA expression loop_expression
+    (69) loop_expression -> . empty
+    (70) empty -> .
+
+    SE_VIRGULA      shift and go to state 112
+    FP              reduce using rule 70 (empty -> .)
+
+    loop_expression                shift and go to state 111
+    empty                          shift and go to state 113
+
+state 78
+
+    (44) relation -> SE_DIFERENTE .
+
+    OPSOMA          reduce using rule 44 (relation -> SE_DIFERENTE .)
+    OPSUB           reduce using rule 44 (relation -> SE_DIFERENTE .)
+    NUMERO          reduce using rule 44 (relation -> SE_DIFERENTE .)
+    AP              reduce using rule 44 (relation -> SE_DIFERENTE .)
+    RES_NOT         reduce using rule 44 (relation -> SE_DIFERENTE .)
+    IDENTIFICADOR   reduce using rule 44 (relation -> SE_DIFERENTE .)
+
+
+state 79
+
+    (45) relation -> SE_MENOR .
+
+    OPSOMA          reduce using rule 45 (relation -> SE_MENOR .)
+    OPSUB           reduce using rule 45 (relation -> SE_MENOR .)
+    NUMERO          reduce using rule 45 (relation -> SE_MENOR .)
+    AP              reduce using rule 45 (relation -> SE_MENOR .)
+    RES_NOT         reduce using rule 45 (relation -> SE_MENOR .)
+    IDENTIFICADOR   reduce using rule 45 (relation -> SE_MENOR .)
+
+
+state 80
+
+    (40) expression -> simple_expression opt_relation .
+
+    RES_OR          reduce using rule 40 (expression -> simple_expression opt_relation .)
+    OPSOMA          reduce using rule 40 (expression -> simple_expression opt_relation .)
+    OPSUB           reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_IGUAL        reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_DIFERENTE    reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_MENOR        reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_MENOR_IGUAL  reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_MAIOR_IGUAL  reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_MAIOR        reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_DELIMITADOR  reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_END         reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_ELSE        reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_DO          reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_THEN        reduce using rule 40 (expression -> simple_expression opt_relation .)
+    SE_VIRGULA      reduce using rule 40 (expression -> simple_expression opt_relation .)
+    FP              reduce using rule 40 (expression -> simple_expression opt_relation .)
+    OPMUL           reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_DIV         reduce using rule 40 (expression -> simple_expression opt_relation .)
+    RES_AND         reduce using rule 40 (expression -> simple_expression opt_relation .)
+
+
+state 81
+
+    (48) relation -> SE_MAIOR .
+
+    OPSOMA          reduce using rule 48 (relation -> SE_MAIOR .)
+    OPSUB           reduce using rule 48 (relation -> SE_MAIOR .)
+    NUMERO          reduce using rule 48 (relation -> SE_MAIOR .)
+    AP              reduce using rule 48 (relation -> SE_MAIOR .)
+    RES_NOT         reduce using rule 48 (relation -> SE_MAIOR .)
+    IDENTIFICADOR   reduce using rule 48 (relation -> SE_MAIOR .)
+
+
+state 82
+
+    (43) relation -> SE_IGUAL .
+
+    OPSOMA          reduce using rule 43 (relation -> SE_IGUAL .)
+    OPSUB           reduce using rule 43 (relation -> SE_IGUAL .)
+    NUMERO          reduce using rule 43 (relation -> SE_IGUAL .)
+    AP              reduce using rule 43 (relation -> SE_IGUAL .)
+    RES_NOT         reduce using rule 43 (relation -> SE_IGUAL .)
+    IDENTIFICADOR   reduce using rule 43 (relation -> SE_IGUAL .)
+
+
+state 83
+
+    (46) relation -> SE_MENOR_IGUAL .
+
+    OPSOMA          reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+    OPSUB           reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+    NUMERO          reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+    AP              reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+    RES_NOT         reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+    IDENTIFICADOR   reduce using rule 46 (relation -> SE_MENOR_IGUAL .)
+
+
+state 84
+
+    (41) opt_relation -> relation . simple_expression
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    signal                         shift and go to state 46
+    simple_expression              shift and go to state 114
+    opt_signal                     shift and go to state 47
+    empty                          shift and go to state 61
+
+state 85
+
+    (47) relation -> SE_MAIOR_IGUAL .
+
+    OPSOMA          reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+    OPSUB           reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+    NUMERO          reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+    AP              reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+    RES_NOT         reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+    IDENTIFICADOR   reduce using rule 47 (relation -> SE_MAIOR_IGUAL .)
+
+
+state 86
+
+    (42) opt_relation -> empty .
+
+    RES_OR          reduce using rule 42 (opt_relation -> empty .)
+    OPSOMA          reduce using rule 42 (opt_relation -> empty .)
+    OPSUB           reduce using rule 42 (opt_relation -> empty .)
+    SE_IGUAL        reduce using rule 42 (opt_relation -> empty .)
+    SE_DIFERENTE    reduce using rule 42 (opt_relation -> empty .)
+    SE_MENOR        reduce using rule 42 (opt_relation -> empty .)
+    SE_MENOR_IGUAL  reduce using rule 42 (opt_relation -> empty .)
+    SE_MAIOR_IGUAL  reduce using rule 42 (opt_relation -> empty .)
+    SE_MAIOR        reduce using rule 42 (opt_relation -> empty .)
+    SE_DELIMITADOR  reduce using rule 42 (opt_relation -> empty .)
+    RES_END         reduce using rule 42 (opt_relation -> empty .)
+    RES_ELSE        reduce using rule 42 (opt_relation -> empty .)
+    RES_DO          reduce using rule 42 (opt_relation -> empty .)
+    RES_THEN        reduce using rule 42 (opt_relation -> empty .)
+    SE_VIRGULA      reduce using rule 42 (opt_relation -> empty .)
+    FP              reduce using rule 42 (opt_relation -> empty .)
+    OPMUL           reduce using rule 42 (opt_relation -> empty .)
+    RES_DIV         reduce using rule 42 (opt_relation -> empty .)
+    RES_AND         reduce using rule 42 (opt_relation -> empty .)
+
+
+state 87
+
+    (29) opt_ident -> SE_ATRIBUICAO expression .
+
+    SE_DELIMITADOR  reduce using rule 29 (opt_ident -> SE_ATRIBUICAO expression .)
+    RES_END         reduce using rule 29 (opt_ident -> SE_ATRIBUICAO expression .)
+    RES_ELSE        reduce using rule 29 (opt_ident -> SE_ATRIBUICAO expression .)
+
+
+state 88
+
+    (22) command_loop -> SE_DELIMITADOR command . command_loop
+    (22) command_loop -> . SE_DELIMITADOR command command_loop
+    (23) command_loop -> . empty
+    (70) empty -> .
+
+    SE_DELIMITADOR  shift and go to state 57
+    RES_END         reduce using rule 70 (empty -> .)
+
+    command_loop                   shift and go to state 115
+    empty                          shift and go to state 59
+
+state 89
+
+    (21) compound_command -> RES_BEGIN command command_loop RES_END .
+
+    SE_DELIMITADOR  reduce using rule 21 (compound_command -> RES_BEGIN command command_loop RES_END .)
+    RES_END         reduce using rule 21 (compound_command -> RES_BEGIN command command_loop RES_END .)
+    RES_ELSE        reduce using rule 21 (compound_command -> RES_BEGIN command command_loop RES_END .)
+    SE_PONTO_FINAL  reduce using rule 21 (compound_command -> RES_BEGIN command command_loop RES_END .)
+
+
+state 90
+
+    (39) loop_command -> RES_WHILE expression RES_DO . command
+    (24) command -> . start_ident
+    (25) command -> . compound_command
+    (26) command -> . conditional_command
+    (27) command -> . loop_command
+    (28) start_ident -> . IDENTIFICADOR opt_ident
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+    (36) conditional_command -> . RES_IF expression RES_THEN command opt_else
+    (39) loop_command -> . RES_WHILE expression RES_DO command
+
+    IDENTIFICADOR   shift and go to state 34
+    RES_BEGIN       shift and go to state 26
+    RES_IF          shift and go to state 39
+    RES_WHILE       shift and go to state 38
+
+    start_ident                    shift and go to state 32
+    loop_command                   shift and go to state 33
+    compound_command               shift and go to state 35
+    conditional_command            shift and go to state 36
+    command                        shift and go to state 116
+
+state 91
+
+    (36) conditional_command -> RES_IF expression RES_THEN . command opt_else
+    (24) command -> . start_ident
+    (25) command -> . compound_command
+    (26) command -> . conditional_command
+    (27) command -> . loop_command
+    (28) start_ident -> . IDENTIFICADOR opt_ident
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+    (36) conditional_command -> . RES_IF expression RES_THEN command opt_else
+    (39) loop_command -> . RES_WHILE expression RES_DO command
+
+    IDENTIFICADOR   shift and go to state 34
+    RES_BEGIN       shift and go to state 26
+    RES_IF          shift and go to state 39
+    RES_WHILE       shift and go to state 38
+
+    start_ident                    shift and go to state 32
+    loop_command                   shift and go to state 33
+    conditional_command            shift and go to state 36
+    compound_command               shift and go to state 35
+    command                        shift and go to state 117
+
+state 92
+
+    (13) declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR block SE_DELIMITADOR .
+
+    RES_BEGIN       reduce using rule 13 (declare_procedure -> RES_PROCEDURE IDENTIFICADOR param_form SE_DELIMITADOR block SE_DELIMITADOR .)
+
+
+state 93
+
+    (19) param_form_1_loop -> SE_DELIMITADOR param_form_1 . param_form_1_loop
+    (19) param_form_1_loop -> . SE_DELIMITADOR param_form_1 param_form_1_loop
+    (20) param_form_1_loop -> . empty
+    (70) empty -> .
+
+    SE_DELIMITADOR  shift and go to state 64
+    FP              reduce using rule 70 (empty -> .)
+
+    param_form_1_loop              shift and go to state 118
+    empty                          shift and go to state 66
+
+state 94
+
+    (15) param_form -> AP param_form_1 param_form_1_loop FP .
+
+    SE_DELIMITADOR  reduce using rule 15 (param_form -> AP param_form_1 param_form_1_loop FP .)
+
+
+state 95
+
+    (18) param_form_1 -> list_ids SE_DOIS_PONTOS type .
+
+    SE_DELIMITADOR  reduce using rule 18 (param_form_1 -> list_ids SE_DOIS_PONTOS type .)
+    FP              reduce using rule 18 (param_form_1 -> list_ids SE_DOIS_PONTOS type .)
+
+
+state 96
+
+    (17) param_form_1 -> RES_VAR list_ids SE_DOIS_PONTOS . type
+    (3) type -> . RES_INT
+    (4) type -> . RES_BOOLEAN
+
+    RES_INT         shift and go to state 5
+    RES_BOOLEAN     shift and go to state 6
+
+    type                           shift and go to state 119
+
+state 97
+
+    (54) term_loop -> signal . term term_loop
+    (57) term -> . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    term                           shift and go to state 120
+    factor                         shift and go to state 74
+    variable                       shift and go to state 75
+
+state 98
+
+    (55) term_loop -> RES_OR . term term_loop
+    (57) term -> . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    term                           shift and go to state 121
+    factor                         shift and go to state 74
+    variable                       shift and go to state 75
+
+state 99
+
+    (49) simple_expression -> opt_signal term term_loop .
+
+    SE_IGUAL        reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_DIFERENTE    reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_MENOR        reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_MENOR_IGUAL  reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_MAIOR        reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_VIRGULA      reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    FP              reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_OR          reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    OPSOMA          reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    OPSUB           reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    SE_DELIMITADOR  reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_END         reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_ELSE        reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_DO          reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_THEN        reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    OPMUL           reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_DIV         reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+    RES_AND         reduce using rule 49 (simple_expression -> opt_signal term term_loop .)
+
+
+state 100
+
+    (56) term_loop -> empty .
+
+    RES_OR          reduce using rule 56 (term_loop -> empty .)
+    OPSOMA          reduce using rule 56 (term_loop -> empty .)
+    OPSUB           reduce using rule 56 (term_loop -> empty .)
+    SE_IGUAL        reduce using rule 56 (term_loop -> empty .)
+    SE_DIFERENTE    reduce using rule 56 (term_loop -> empty .)
+    SE_MENOR        reduce using rule 56 (term_loop -> empty .)
+    SE_MENOR_IGUAL  reduce using rule 56 (term_loop -> empty .)
+    SE_MAIOR_IGUAL  reduce using rule 56 (term_loop -> empty .)
+    SE_MAIOR        reduce using rule 56 (term_loop -> empty .)
+    SE_DELIMITADOR  reduce using rule 56 (term_loop -> empty .)
+    RES_END         reduce using rule 56 (term_loop -> empty .)
+    RES_ELSE        reduce using rule 56 (term_loop -> empty .)
+    RES_DO          reduce using rule 56 (term_loop -> empty .)
+    RES_THEN        reduce using rule 56 (term_loop -> empty .)
+    SE_VIRGULA      reduce using rule 56 (term_loop -> empty .)
+    FP              reduce using rule 56 (term_loop -> empty .)
+    OPMUL           reduce using rule 56 (term_loop -> empty .)
+    RES_DIV         reduce using rule 56 (term_loop -> empty .)
+    RES_AND         reduce using rule 56 (term_loop -> empty .)
+
+
+state 101
+
+    (62) variable -> IDENTIFICADOR opt_expression .
+
+    RES_OR          reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    OPSOMA          reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    OPSUB           reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_IGUAL        reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_DIFERENTE    reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_MENOR        reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_MENOR_IGUAL  reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_MAIOR_IGUAL  reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_MAIOR        reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_DELIMITADOR  reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_END         reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_ELSE        reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_DO          reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_THEN        reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    SE_VIRGULA      reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    FP              reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    OPMUL           reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_DIV         reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+    RES_AND         reduce using rule 62 (variable -> IDENTIFICADOR opt_expression .)
+
+
+state 102
+
+    (35) opt_expression -> empty .
+    (53) opt_signal -> empty .
+
+    RES_OR          reduce using rule 35 (opt_expression -> empty .)
+    OPSOMA          reduce using rule 35 (opt_expression -> empty .)
+    OPSUB           reduce using rule 35 (opt_expression -> empty .)
+    SE_IGUAL        reduce using rule 35 (opt_expression -> empty .)
+    SE_DIFERENTE    reduce using rule 35 (opt_expression -> empty .)
+    SE_MENOR        reduce using rule 35 (opt_expression -> empty .)
+    SE_MENOR_IGUAL  reduce using rule 35 (opt_expression -> empty .)
+    SE_MAIOR_IGUAL  reduce using rule 35 (opt_expression -> empty .)
+    SE_MAIOR        reduce using rule 35 (opt_expression -> empty .)
+    SE_DELIMITADOR  reduce using rule 35 (opt_expression -> empty .)
+    RES_END         reduce using rule 35 (opt_expression -> empty .)
+    RES_ELSE        reduce using rule 35 (opt_expression -> empty .)
+    RES_DO          reduce using rule 35 (opt_expression -> empty .)
+    RES_THEN        reduce using rule 35 (opt_expression -> empty .)
+    SE_VIRGULA      reduce using rule 35 (opt_expression -> empty .)
+    FP              reduce using rule 35 (opt_expression -> empty .)
+    OPMUL           reduce using rule 35 (opt_expression -> empty .)
+    RES_DIV         reduce using rule 35 (opt_expression -> empty .)
+    RES_AND         reduce using rule 35 (opt_expression -> empty .)
+    NUMERO          reduce using rule 53 (opt_signal -> empty .)
+    AP              reduce using rule 53 (opt_signal -> empty .)
+    RES_NOT         reduce using rule 53 (opt_signal -> empty .)
+    IDENTIFICADOR   reduce using rule 53 (opt_signal -> empty .)
+
+
+state 103
+
+    (66) factor -> RES_NOT factor .
+
+    RES_OR          reduce using rule 66 (factor -> RES_NOT factor .)
+    OPSOMA          reduce using rule 66 (factor -> RES_NOT factor .)
+    OPSUB           reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_IGUAL        reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_DIFERENTE    reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_MENOR        reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_MENOR_IGUAL  reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_MAIOR_IGUAL  reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_MAIOR        reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_DELIMITADOR  reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_END         reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_ELSE        reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_DO          reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_THEN        reduce using rule 66 (factor -> RES_NOT factor .)
+    SE_VIRGULA      reduce using rule 66 (factor -> RES_NOT factor .)
+    FP              reduce using rule 66 (factor -> RES_NOT factor .)
+    OPMUL           reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_DIV         reduce using rule 66 (factor -> RES_NOT factor .)
+    RES_AND         reduce using rule 66 (factor -> RES_NOT factor .)
+
+
+state 104
+
+    (65) factor -> AP expression . FP
+
+    FP              shift and go to state 122
+
+
+state 105
+
+    (57) term -> factor factor_loop .
+
+    RES_OR          reduce using rule 57 (term -> factor factor_loop .)
+    OPSOMA          reduce using rule 57 (term -> factor factor_loop .)
+    OPSUB           reduce using rule 57 (term -> factor factor_loop .)
+    SE_IGUAL        reduce using rule 57 (term -> factor factor_loop .)
+    SE_DIFERENTE    reduce using rule 57 (term -> factor factor_loop .)
+    SE_MENOR        reduce using rule 57 (term -> factor factor_loop .)
+    SE_MENOR_IGUAL  reduce using rule 57 (term -> factor factor_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 57 (term -> factor factor_loop .)
+    SE_MAIOR        reduce using rule 57 (term -> factor factor_loop .)
+    SE_DELIMITADOR  reduce using rule 57 (term -> factor factor_loop .)
+    RES_END         reduce using rule 57 (term -> factor factor_loop .)
+    RES_ELSE        reduce using rule 57 (term -> factor factor_loop .)
+    RES_DO          reduce using rule 57 (term -> factor factor_loop .)
+    RES_THEN        reduce using rule 57 (term -> factor factor_loop .)
+    SE_VIRGULA      reduce using rule 57 (term -> factor factor_loop .)
+    FP              reduce using rule 57 (term -> factor factor_loop .)
+    OPMUL           reduce using rule 57 (term -> factor factor_loop .)
+    RES_DIV         reduce using rule 57 (term -> factor factor_loop .)
+    RES_AND         reduce using rule 57 (term -> factor factor_loop .)
+
+
+state 106
+
+    (58) factor_loop -> OPMUL . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    variable                       shift and go to state 75
+    factor                         shift and go to state 123
+
+state 107
+
+    (60) factor_loop -> RES_AND . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    variable                       shift and go to state 75
+    factor                         shift and go to state 124
+
+state 108
+
+    (61) factor_loop -> empty .
+
+    RES_OR          reduce using rule 61 (factor_loop -> empty .)
+    OPSOMA          reduce using rule 61 (factor_loop -> empty .)
+    OPSUB           reduce using rule 61 (factor_loop -> empty .)
+    SE_IGUAL        reduce using rule 61 (factor_loop -> empty .)
+    SE_DIFERENTE    reduce using rule 61 (factor_loop -> empty .)
+    SE_MENOR        reduce using rule 61 (factor_loop -> empty .)
+    SE_MENOR_IGUAL  reduce using rule 61 (factor_loop -> empty .)
+    SE_MAIOR_IGUAL  reduce using rule 61 (factor_loop -> empty .)
+    SE_MAIOR        reduce using rule 61 (factor_loop -> empty .)
+    SE_DELIMITADOR  reduce using rule 61 (factor_loop -> empty .)
+    RES_END         reduce using rule 61 (factor_loop -> empty .)
+    RES_ELSE        reduce using rule 61 (factor_loop -> empty .)
+    RES_DO          reduce using rule 61 (factor_loop -> empty .)
+    RES_THEN        reduce using rule 61 (factor_loop -> empty .)
+    SE_VIRGULA      reduce using rule 61 (factor_loop -> empty .)
+    FP              reduce using rule 61 (factor_loop -> empty .)
+    OPMUL           reduce using rule 61 (factor_loop -> empty .)
+    RES_DIV         reduce using rule 61 (factor_loop -> empty .)
+    RES_AND         reduce using rule 61 (factor_loop -> empty .)
+
+
+state 109
+
+    (59) factor_loop -> RES_DIV . factor factor_loop
+    (63) factor -> . variable
+    (64) factor -> . NUMERO
+    (65) factor -> . AP expression FP
+    (66) factor -> . RES_NOT factor
+    (62) variable -> . IDENTIFICADOR opt_expression
+
+    NUMERO          shift and go to state 72
+    AP              shift and go to state 73
+    RES_NOT         shift and go to state 71
+    IDENTIFICADOR   shift and go to state 70
+
+    variable                       shift and go to state 75
+    factor                         shift and go to state 125
+
+state 110
+
+    (32) opt_expression_list -> AP list_expression FP .
+
+    SE_DELIMITADOR  reduce using rule 32 (opt_expression_list -> AP list_expression FP .)
+    RES_END         reduce using rule 32 (opt_expression_list -> AP list_expression FP .)
+    RES_ELSE        reduce using rule 32 (opt_expression_list -> AP list_expression FP .)
+
+
+state 111
+
+    (67) list_expression -> expression loop_expression .
+
+    FP              reduce using rule 67 (list_expression -> expression loop_expression .)
+
+
+state 112
+
+    (68) loop_expression -> SE_VIRGULA . expression loop_expression
+    (40) expression -> . simple_expression opt_relation
+    (49) simple_expression -> . opt_signal term term_loop
+    (52) opt_signal -> . signal
+    (53) opt_signal -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    NUMERO          reduce using rule 70 (empty -> .)
+    AP              reduce using rule 70 (empty -> .)
+    RES_NOT         reduce using rule 70 (empty -> .)
+    IDENTIFICADOR   reduce using rule 70 (empty -> .)
+
+    expression                     shift and go to state 126
+    simple_expression              shift and go to state 53
+    opt_signal                     shift and go to state 47
+    signal                         shift and go to state 46
+    empty                          shift and go to state 61
+
+state 113
+
+    (69) loop_expression -> empty .
+
+    FP              reduce using rule 69 (loop_expression -> empty .)
+
+
+state 114
+
+    (41) opt_relation -> relation simple_expression .
+
+    RES_OR          reduce using rule 41 (opt_relation -> relation simple_expression .)
+    OPSOMA          reduce using rule 41 (opt_relation -> relation simple_expression .)
+    OPSUB           reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_IGUAL        reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_DIFERENTE    reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_MENOR        reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_MENOR_IGUAL  reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_MAIOR_IGUAL  reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_MAIOR        reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_DELIMITADOR  reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_END         reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_ELSE        reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_DO          reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_THEN        reduce using rule 41 (opt_relation -> relation simple_expression .)
+    SE_VIRGULA      reduce using rule 41 (opt_relation -> relation simple_expression .)
+    FP              reduce using rule 41 (opt_relation -> relation simple_expression .)
+    OPMUL           reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_DIV         reduce using rule 41 (opt_relation -> relation simple_expression .)
+    RES_AND         reduce using rule 41 (opt_relation -> relation simple_expression .)
+
+
+state 115
+
+    (22) command_loop -> SE_DELIMITADOR command command_loop .
+
+    RES_END         reduce using rule 22 (command_loop -> SE_DELIMITADOR command command_loop .)
+
+
+state 116
+
+    (39) loop_command -> RES_WHILE expression RES_DO command .
+
+    SE_DELIMITADOR  reduce using rule 39 (loop_command -> RES_WHILE expression RES_DO command .)
+    RES_END         reduce using rule 39 (loop_command -> RES_WHILE expression RES_DO command .)
+    RES_ELSE        reduce using rule 39 (loop_command -> RES_WHILE expression RES_DO command .)
+
+
+state 117
+
+    (36) conditional_command -> RES_IF expression RES_THEN command . opt_else
+    (37) opt_else -> . RES_ELSE command
+    (38) opt_else -> . empty
+    (70) empty -> .
+
+  ! shift/reduce conflict for RES_ELSE resolved as shift
+    RES_ELSE        shift and go to state 129
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+
+  ! RES_ELSE        [ reduce using rule 70 (empty -> .) ]
+
+    opt_else                       shift and go to state 127
+    empty                          shift and go to state 128
+
+state 118
+
+    (19) param_form_1_loop -> SE_DELIMITADOR param_form_1 param_form_1_loop .
+
+    FP              reduce using rule 19 (param_form_1_loop -> SE_DELIMITADOR param_form_1 param_form_1_loop .)
+
+
+state 119
+
+    (17) param_form_1 -> RES_VAR list_ids SE_DOIS_PONTOS type .
+
+    SE_DELIMITADOR  reduce using rule 17 (param_form_1 -> RES_VAR list_ids SE_DOIS_PONTOS type .)
+    FP              reduce using rule 17 (param_form_1 -> RES_VAR list_ids SE_DOIS_PONTOS type .)
+
+
+state 120
+
+    (54) term_loop -> signal term . term_loop
+    (54) term_loop -> . signal term term_loop
+    (55) term_loop -> . RES_OR term term_loop
+    (56) term_loop -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+  ! shift/reduce conflict for RES_OR resolved as shift
+  ! shift/reduce conflict for OPSOMA resolved as shift
+  ! shift/reduce conflict for OPSUB resolved as shift
+    RES_OR          shift and go to state 98
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+    OPMUL           reduce using rule 70 (empty -> .)
+    RES_DIV         reduce using rule 70 (empty -> .)
+    RES_AND         reduce using rule 70 (empty -> .)
+
+  ! RES_OR          [ reduce using rule 70 (empty -> .) ]
+  ! OPSOMA          [ reduce using rule 70 (empty -> .) ]
+  ! OPSUB           [ reduce using rule 70 (empty -> .) ]
+
+    signal                         shift and go to state 97
+    empty                          shift and go to state 100
+    term_loop                      shift and go to state 130
+
+state 121
+
+    (55) term_loop -> RES_OR term . term_loop
+    (54) term_loop -> . signal term term_loop
+    (55) term_loop -> . RES_OR term term_loop
+    (56) term_loop -> . empty
+    (50) signal -> . OPSOMA
+    (51) signal -> . OPSUB
+    (70) empty -> .
+
+  ! shift/reduce conflict for RES_OR resolved as shift
+  ! shift/reduce conflict for OPSOMA resolved as shift
+  ! shift/reduce conflict for OPSUB resolved as shift
+    RES_OR          shift and go to state 98
+    OPSOMA          shift and go to state 48
+    OPSUB           shift and go to state 49
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+    OPMUL           reduce using rule 70 (empty -> .)
+    RES_DIV         reduce using rule 70 (empty -> .)
+    RES_AND         reduce using rule 70 (empty -> .)
+
+  ! RES_OR          [ reduce using rule 70 (empty -> .) ]
+  ! OPSOMA          [ reduce using rule 70 (empty -> .) ]
+  ! OPSUB           [ reduce using rule 70 (empty -> .) ]
+
+    empty                          shift and go to state 100
+    signal                         shift and go to state 97
+    term_loop                      shift and go to state 131
+
+state 122
+
+    (65) factor -> AP expression FP .
+
+    RES_OR          reduce using rule 65 (factor -> AP expression FP .)
+    OPSOMA          reduce using rule 65 (factor -> AP expression FP .)
+    OPSUB           reduce using rule 65 (factor -> AP expression FP .)
+    SE_IGUAL        reduce using rule 65 (factor -> AP expression FP .)
+    SE_DIFERENTE    reduce using rule 65 (factor -> AP expression FP .)
+    SE_MENOR        reduce using rule 65 (factor -> AP expression FP .)
+    SE_MENOR_IGUAL  reduce using rule 65 (factor -> AP expression FP .)
+    SE_MAIOR_IGUAL  reduce using rule 65 (factor -> AP expression FP .)
+    SE_MAIOR        reduce using rule 65 (factor -> AP expression FP .)
+    SE_DELIMITADOR  reduce using rule 65 (factor -> AP expression FP .)
+    RES_END         reduce using rule 65 (factor -> AP expression FP .)
+    RES_ELSE        reduce using rule 65 (factor -> AP expression FP .)
+    RES_DO          reduce using rule 65 (factor -> AP expression FP .)
+    RES_THEN        reduce using rule 65 (factor -> AP expression FP .)
+    SE_VIRGULA      reduce using rule 65 (factor -> AP expression FP .)
+    FP              reduce using rule 65 (factor -> AP expression FP .)
+    OPMUL           reduce using rule 65 (factor -> AP expression FP .)
+    RES_DIV         reduce using rule 65 (factor -> AP expression FP .)
+    RES_AND         reduce using rule 65 (factor -> AP expression FP .)
+
+
+state 123
+
+    (58) factor_loop -> OPMUL factor . factor_loop
+    (58) factor_loop -> . OPMUL factor factor_loop
+    (59) factor_loop -> . RES_DIV factor factor_loop
+    (60) factor_loop -> . RES_AND factor factor_loop
+    (61) factor_loop -> . empty
+    (70) empty -> .
+
+  ! shift/reduce conflict for OPMUL resolved as shift
+  ! shift/reduce conflict for RES_DIV resolved as shift
+  ! shift/reduce conflict for RES_AND resolved as shift
+    OPMUL           shift and go to state 106
+    RES_DIV         shift and go to state 109
+    RES_AND         shift and go to state 107
+    RES_OR          reduce using rule 70 (empty -> .)
+    OPSOMA          reduce using rule 70 (empty -> .)
+    OPSUB           reduce using rule 70 (empty -> .)
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+
+  ! OPMUL           [ reduce using rule 70 (empty -> .) ]
+  ! RES_DIV         [ reduce using rule 70 (empty -> .) ]
+  ! RES_AND         [ reduce using rule 70 (empty -> .) ]
+
+    factor_loop                    shift and go to state 132
+    empty                          shift and go to state 108
+
+state 124
+
+    (60) factor_loop -> RES_AND factor . factor_loop
+    (58) factor_loop -> . OPMUL factor factor_loop
+    (59) factor_loop -> . RES_DIV factor factor_loop
+    (60) factor_loop -> . RES_AND factor factor_loop
+    (61) factor_loop -> . empty
+    (70) empty -> .
+
+  ! shift/reduce conflict for OPMUL resolved as shift
+  ! shift/reduce conflict for RES_DIV resolved as shift
+  ! shift/reduce conflict for RES_AND resolved as shift
+    OPMUL           shift and go to state 106
+    RES_DIV         shift and go to state 109
+    RES_AND         shift and go to state 107
+    RES_OR          reduce using rule 70 (empty -> .)
+    OPSOMA          reduce using rule 70 (empty -> .)
+    OPSUB           reduce using rule 70 (empty -> .)
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+
+  ! OPMUL           [ reduce using rule 70 (empty -> .) ]
+  ! RES_DIV         [ reduce using rule 70 (empty -> .) ]
+  ! RES_AND         [ reduce using rule 70 (empty -> .) ]
+
+    factor_loop                    shift and go to state 133
+    empty                          shift and go to state 108
+
+state 125
+
+    (59) factor_loop -> RES_DIV factor . factor_loop
+    (58) factor_loop -> . OPMUL factor factor_loop
+    (59) factor_loop -> . RES_DIV factor factor_loop
+    (60) factor_loop -> . RES_AND factor factor_loop
+    (61) factor_loop -> . empty
+    (70) empty -> .
+
+  ! shift/reduce conflict for OPMUL resolved as shift
+  ! shift/reduce conflict for RES_DIV resolved as shift
+  ! shift/reduce conflict for RES_AND resolved as shift
+    OPMUL           shift and go to state 106
+    RES_DIV         shift and go to state 109
+    RES_AND         shift and go to state 107
+    RES_OR          reduce using rule 70 (empty -> .)
+    OPSOMA          reduce using rule 70 (empty -> .)
+    OPSUB           reduce using rule 70 (empty -> .)
+    SE_IGUAL        reduce using rule 70 (empty -> .)
+    SE_DIFERENTE    reduce using rule 70 (empty -> .)
+    SE_MENOR        reduce using rule 70 (empty -> .)
+    SE_MENOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR_IGUAL  reduce using rule 70 (empty -> .)
+    SE_MAIOR        reduce using rule 70 (empty -> .)
+    SE_DELIMITADOR  reduce using rule 70 (empty -> .)
+    RES_END         reduce using rule 70 (empty -> .)
+    RES_ELSE        reduce using rule 70 (empty -> .)
+    RES_DO          reduce using rule 70 (empty -> .)
+    RES_THEN        reduce using rule 70 (empty -> .)
+    SE_VIRGULA      reduce using rule 70 (empty -> .)
+    FP              reduce using rule 70 (empty -> .)
+
+  ! OPMUL           [ reduce using rule 70 (empty -> .) ]
+  ! RES_DIV         [ reduce using rule 70 (empty -> .) ]
+  ! RES_AND         [ reduce using rule 70 (empty -> .) ]
+
+    factor_loop                    shift and go to state 134
+    empty                          shift and go to state 108
+
+state 126
+
+    (68) loop_expression -> SE_VIRGULA expression . loop_expression
+    (68) loop_expression -> . SE_VIRGULA expression loop_expression
+    (69) loop_expression -> . empty
+    (70) empty -> .
+
+    SE_VIRGULA      shift and go to state 112
+    FP              reduce using rule 70 (empty -> .)
+
+    loop_expression                shift and go to state 135
+    empty                          shift and go to state 113
+
+state 127
+
+    (36) conditional_command -> RES_IF expression RES_THEN command opt_else .
+
+    SE_DELIMITADOR  reduce using rule 36 (conditional_command -> RES_IF expression RES_THEN command opt_else .)
+    RES_END         reduce using rule 36 (conditional_command -> RES_IF expression RES_THEN command opt_else .)
+    RES_ELSE        reduce using rule 36 (conditional_command -> RES_IF expression RES_THEN command opt_else .)
+
+
+state 128
+
+    (38) opt_else -> empty .
+
+    SE_DELIMITADOR  reduce using rule 38 (opt_else -> empty .)
+    RES_END         reduce using rule 38 (opt_else -> empty .)
+    RES_ELSE        reduce using rule 38 (opt_else -> empty .)
+
+
+state 129
+
+    (37) opt_else -> RES_ELSE . command
+    (24) command -> . start_ident
+    (25) command -> . compound_command
+    (26) command -> . conditional_command
+    (27) command -> . loop_command
+    (28) start_ident -> . IDENTIFICADOR opt_ident
+    (21) compound_command -> . RES_BEGIN command command_loop RES_END
+    (36) conditional_command -> . RES_IF expression RES_THEN command opt_else
+    (39) loop_command -> . RES_WHILE expression RES_DO command
+
+    IDENTIFICADOR   shift and go to state 34
+    RES_BEGIN       shift and go to state 26
+    RES_IF          shift and go to state 39
+    RES_WHILE       shift and go to state 38
+
+    start_ident                    shift and go to state 32
+    loop_command                   shift and go to state 33
+    conditional_command            shift and go to state 36
+    compound_command               shift and go to state 35
+    command                        shift and go to state 136
+
+state 130
+
+    (54) term_loop -> signal term term_loop .
+
+    RES_OR          reduce using rule 54 (term_loop -> signal term term_loop .)
+    OPSOMA          reduce using rule 54 (term_loop -> signal term term_loop .)
+    OPSUB           reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_IGUAL        reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_DIFERENTE    reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_MENOR        reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_MENOR_IGUAL  reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_MAIOR        reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_DELIMITADOR  reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_END         reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_ELSE        reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_DO          reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_THEN        reduce using rule 54 (term_loop -> signal term term_loop .)
+    SE_VIRGULA      reduce using rule 54 (term_loop -> signal term term_loop .)
+    FP              reduce using rule 54 (term_loop -> signal term term_loop .)
+    OPMUL           reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_DIV         reduce using rule 54 (term_loop -> signal term term_loop .)
+    RES_AND         reduce using rule 54 (term_loop -> signal term term_loop .)
+
+
+state 131
+
+    (55) term_loop -> RES_OR term term_loop .
+
+    RES_OR          reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    OPSOMA          reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    OPSUB           reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_IGUAL        reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_DIFERENTE    reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_MENOR        reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_MENOR_IGUAL  reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_MAIOR        reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_DELIMITADOR  reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_END         reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_ELSE        reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_DO          reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_THEN        reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    SE_VIRGULA      reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    FP              reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    OPMUL           reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_DIV         reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+    RES_AND         reduce using rule 55 (term_loop -> RES_OR term term_loop .)
+
+
+state 132
+
+    (58) factor_loop -> OPMUL factor factor_loop .
+
+    RES_OR          reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    OPSOMA          reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    OPSUB           reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_IGUAL        reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_DIFERENTE    reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_MENOR        reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_MENOR_IGUAL  reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_MAIOR        reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_DELIMITADOR  reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_END         reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_ELSE        reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_DO          reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_THEN        reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    SE_VIRGULA      reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    FP              reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    OPMUL           reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_DIV         reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+    RES_AND         reduce using rule 58 (factor_loop -> OPMUL factor factor_loop .)
+
+
+state 133
+
+    (60) factor_loop -> RES_AND factor factor_loop .
+
+    RES_OR          reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    OPSOMA          reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    OPSUB           reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_IGUAL        reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_DIFERENTE    reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_MENOR        reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_MENOR_IGUAL  reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_MAIOR        reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_DELIMITADOR  reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_END         reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_ELSE        reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_DO          reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_THEN        reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    SE_VIRGULA      reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    FP              reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    OPMUL           reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_DIV         reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+    RES_AND         reduce using rule 60 (factor_loop -> RES_AND factor factor_loop .)
+
+
+state 134
+
+    (59) factor_loop -> RES_DIV factor factor_loop .
+
+    RES_OR          reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    OPSOMA          reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    OPSUB           reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_IGUAL        reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_DIFERENTE    reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_MENOR        reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_MENOR_IGUAL  reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_MAIOR_IGUAL  reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_MAIOR        reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_DELIMITADOR  reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_END         reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_ELSE        reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_DO          reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_THEN        reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    SE_VIRGULA      reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    FP              reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    OPMUL           reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_DIV         reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+    RES_AND         reduce using rule 59 (factor_loop -> RES_DIV factor factor_loop .)
+
+
+state 135
+
+    (68) loop_expression -> SE_VIRGULA expression loop_expression .
+
+    FP              reduce using rule 68 (loop_expression -> SE_VIRGULA expression loop_expression .)
+
+
+state 136
+
+    (37) opt_else -> RES_ELSE command .
+
+    SE_DELIMITADOR  reduce using rule 37 (opt_else -> RES_ELSE command .)
+    RES_END         reduce using rule 37 (opt_else -> RES_ELSE command .)
+    RES_ELSE        reduce using rule 37 (opt_else -> RES_ELSE command .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for AP in state 34 resolved as shift
+WARNING: shift/reduce conflict for SE_IGUAL in state 53 resolved as shift
+WARNING: shift/reduce conflict for SE_DIFERENTE in state 53 resolved as shift
+WARNING: shift/reduce conflict for SE_MENOR in state 53 resolved as shift
+WARNING: shift/reduce conflict for SE_MENOR_IGUAL in state 53 resolved as shift
+WARNING: shift/reduce conflict for SE_MAIOR_IGUAL in state 53 resolved as shift
+WARNING: shift/reduce conflict for SE_MAIOR in state 53 resolved as shift
+WARNING: shift/reduce conflict for RES_OR in state 69 resolved as shift
+WARNING: shift/reduce conflict for OPSOMA in state 69 resolved as shift
+WARNING: shift/reduce conflict for OPSUB in state 69 resolved as shift
+WARNING: shift/reduce conflict for OPSOMA in state 70 resolved as shift
+WARNING: shift/reduce conflict for OPSUB in state 70 resolved as shift
+WARNING: shift/reduce conflict for OPMUL in state 74 resolved as shift
+WARNING: shift/reduce conflict for RES_DIV in state 74 resolved as shift
+WARNING: shift/reduce conflict for RES_AND in state 74 resolved as shift
+WARNING: shift/reduce conflict for RES_ELSE in state 117 resolved as shift
+WARNING: shift/reduce conflict for RES_OR in state 120 resolved as shift
+WARNING: shift/reduce conflict for OPSOMA in state 120 resolved as shift
+WARNING: shift/reduce conflict for OPSUB in state 120 resolved as shift
+WARNING: shift/reduce conflict for RES_OR in state 121 resolved as shift
+WARNING: shift/reduce conflict for OPSOMA in state 121 resolved as shift
+WARNING: shift/reduce conflict for OPSUB in state 121 resolved as shift
+WARNING: shift/reduce conflict for OPMUL in state 123 resolved as shift
+WARNING: shift/reduce conflict for RES_DIV in state 123 resolved as shift
+WARNING: shift/reduce conflict for RES_AND in state 123 resolved as shift
+WARNING: shift/reduce conflict for OPMUL in state 124 resolved as shift
+WARNING: shift/reduce conflict for RES_DIV in state 124 resolved as shift
+WARNING: shift/reduce conflict for RES_AND in state 124 resolved as shift
+WARNING: shift/reduce conflict for OPMUL in state 125 resolved as shift
+WARNING: shift/reduce conflict for RES_DIV in state 125 resolved as shift
+WARNING: shift/reduce conflict for RES_AND in state 125 resolved as shift
+WARNING: reduce/reduce conflict in state 52 resolved using rule (opt_expression_list -> empty)
+WARNING: rejected rule (opt_expression -> empty) in state 52

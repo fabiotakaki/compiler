@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, render_template, jsonify
 from lexical import Lexical
+from syntatic import Syntatic
 from file import File
 
 app = Flask(__name__)
@@ -17,9 +18,12 @@ def validate():
   assert request.method == 'POST'
 
   cr = Lexical(request.form['code'])
-  result = cr.run()
+  lexical_result = cr.run()
 
-  return jsonify({'code': request.form['code'], 'lexical_table': result[0], 'syntatic_result': result[1]})
+  s = Syntatic(request.form['code'], cr.getTokens())
+  syntatic_result = s.run()
+
+  return jsonify({'code': request.form['code'], 'lexical_table': lexical_result, 'syntatic_result': syntatic_result})
 
 @app.route('/validate_file', methods=['POST'])
 def validate_file():
